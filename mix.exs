@@ -7,8 +7,24 @@ defmodule Mate.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      description: description(),
+      package: package(),
+      deps: deps(),
+      name: "Mate",
+      source_url: "https://github.com/maxvw/mate"
     ]
+  end
+
+  defp package() do
+    [
+      files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/maxvw/mate"}
+    ]
+  end
+
+  defp description() do
+    "Customisable Deployment for Elixir / Phoenix"
   end
 
   # Run "mix help compile.app" to learn about applications.
