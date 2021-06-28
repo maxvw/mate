@@ -45,7 +45,9 @@ defmodule Mate.Pipeline do
     end
   end
 
-  def new(steps \\ default_steps()) do
+  def new, do: new(default_steps())
+
+  def new(steps) when is_list(steps) do
     %__MODULE__{
       steps: steps
     }

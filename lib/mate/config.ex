@@ -5,23 +5,20 @@ defmodule Mate.Config do
   defstruct [
     :otp_app,
     :module,
+    :steps,
     driver: Mate.Driver.SSH,
     mix_env: :dev,
-    steps: Pipeline.default_steps(),
     remotes: []
   ]
 
   def read! do
     config = Config.Reader.read!(".mate.exs")
+    remotes = config |> Keyword.drop([:mate])
+    config = struct(__MODULE__, config[:mate])
 
-    struct(__MODULE__, config[:mate])
-    |> Map.merge(%{
-      remotes:
-        config
-        |> Keyword.drop([:mate])
-        |> Enum.map(fn {k, v} -> Remote.new(k, v) end)
-    })
-    |> parse_steps()
+    config
+    |> parse_remotes(remotes)
+    |> parse_steps(config.steps)
   end
 
   def find_remote(%{remotes: []}, _), do: {:error, :no_remotes}
@@ -45,18 +42,31 @@ defmodule Mate.Config do
     end
   end
 
-  defp parse_steps(%{steps: user_fn} = config) when is_function(user_fn) do
+  defp parse_remotes(config, remotes) do
+    remotes =
+      remotes
+      |> Enum.map(fn {k, v} -> Remote.new(k, v) end)
+
+    %{config | remotes: remotes}
+  end
+
+  defp parse_steps(config, steps_fn) when is_function(steps_fn) do
     default_steps = Pipeline.default_steps()
 
     steps =
-      case :erlang.fun_info(user_fn)[:arity] do
-        1 -> user_fn.(default_steps)
-        2 -> user_fn.(default_steps, Mate.Pipeline)
+      case :erlang.fun_info(steps_fn)[:arity] do
+        1 -> steps_fn.(default_steps)
+        2 -> steps_fn.(default_steps, Pipeline)
         _ -> Mix.raise("Custom steps function should have either /1 or /2 arity.")
       end
 
     %{config | steps: steps}
   end
 
-  defp parse_steps(config), do: config
+  defp parse_steps(config, steps) when is_list(steps) do
+    %{config | steps: steps}
+  end
+
+  defp parse_steps(config, _),
+    do: %{config | steps: Pipeline.default_steps()}
 end
