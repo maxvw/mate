@@ -1,4 +1,5 @@
 defmodule Mate.Step.NpmInstall do
+  @moduledoc "This will install the front-end dependencies using npm."
   use Mate.Pipeline.Step
 
   @impl true

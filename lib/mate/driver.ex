@@ -19,25 +19,26 @@ defmodule Mate.Driver do
   Starts the driver, for example create an SSH connection, start a docker container,
   or whatever else might be needed for your new session.
   """
-  @callback start(session :: Session.t(), host :: String.t()) :: {:ok, Session.t()}
+  @callback start(session :: Session.t(), host :: String.t()) ::
+              {:ok, Session.t()} | {:error, any()}
 
   @doc """
   Executes a command using the driver
   """
   @callback exec(session :: Session.t(), command :: String.t(), args :: list(String.t())) ::
-              {:ok, State.t()}
+              {:ok, Session.t()} | {:error, any()}
 
   @doc """
   Copy a file from remote to local
   """
   @callback copy_from(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
-              {:ok, State.t()}
+              {:ok, Session.t()} | {:error, any()}
 
   @doc """
   Copy a file from local to remote
   """
   @callback copy_to(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
-              {:ok, State.t()}
+              {:ok, Session.t()} | {:error, any()}
 
   @doc """
   This one is optional and can be used to close the current connection, cleanup

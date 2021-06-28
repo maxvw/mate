@@ -1,4 +1,9 @@
 defmodule Mate do
+  @moduledoc File.read!("README.md")
+             |> String.split("\n", trim: true)
+             |> List.delete_at(0)
+             |> Enum.join("\n")
+
   alias Mate.Session
 
   def local_cmd(%Session{} = session, cmd, args \\ []) when is_list(args) do

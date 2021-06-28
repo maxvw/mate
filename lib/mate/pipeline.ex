@@ -4,6 +4,7 @@ defmodule Mate.Pipeline do
   alias Mate.Step.{
     CopyToStorage,
     LinkBuildSecrets,
+    CleanBuild,
     MixDigest,
     MixDeps,
     MixRelease,
@@ -22,6 +23,13 @@ defmodule Mate.Pipeline do
             current_step: nil,
             steps: []
 
+  @type t() :: %__MODULE__{
+          prev_step: atom(),
+          next_step: atom(),
+          current_step: atom(),
+          steps: list(atom() | function())
+        }
+
   def default_steps do
     package_json = Path.join("assets", "package.json") |> Path.absname()
 
@@ -30,6 +38,7 @@ defmodule Mate.Pipeline do
       VerifyGit,
       SendGitCommit,
       LinkBuildSecrets,
+      CleanBuild,
       MixDeps,
       MixRelease,
       CopyToStorage

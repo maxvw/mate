@@ -1,4 +1,5 @@
 defmodule Mate.Step.VerifyElixir do
+  @moduledoc "This will verify Elixir is available in PATH on the build server."
   use Mate.Pipeline.Step
 
   @impl true

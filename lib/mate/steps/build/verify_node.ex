@@ -1,4 +1,5 @@
 defmodule Mate.Step.VerifyNode do
+  @moduledoc "This will verify node is available in PATH on the build server."
   use Mate.Pipeline.Step
 
   @impl true

@@ -1,4 +1,5 @@
 defmodule Mate.Step.UnarchiveRelease do
+  @moduledoc "Unarchives the release tarball on the remote deploy servers."
   use Mate.Pipeline.Step
 
   @impl true

@@ -74,11 +74,14 @@ defmodule Mix.Tasks.Mate.Init do
     build_path: "/tmp/mate/<%= @otp_app %>",
     release_path: "/opt/<%= @otp_app %>",
     storage_path: "/home/elixir/release_archives/",
-    build_secrets: %{
-      "prod.secret.exs" => "/mnt/secrets/prod.secret.exs"
-    }
 
-  # Or you can specify separate servers like this:
+  # You can also specify secret files, if they are present on your build server.
+  # config :mate, :staging,
+  #   build_secrets: %{
+  #     "prod.secret.exs" => "/mnt/secrets/prod.secret.exs"
+  #   }
+
+  # You can specify separate servers like this:
   # config :mate, :staging,
   #   build_server: "build.example.com",
   #   deploy_server: "www.example.com"

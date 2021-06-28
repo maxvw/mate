@@ -1,4 +1,5 @@
 defmodule Mate.Step.CopyToDeployHost do
+  @moduledoc "Copies the release tarball to remote deploy servers."
   use Mate.Pipeline.Step
 
   @impl true

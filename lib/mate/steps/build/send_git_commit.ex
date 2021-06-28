@@ -1,4 +1,5 @@
 defmodule Mate.Step.SendGitCommit do
+  @moduledoc "This will push the current branch/commit to the build server."
   use Mate.Pipeline.Step
 
   @impl true

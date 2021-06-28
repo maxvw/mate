@@ -1,10 +1,12 @@
 defmodule Mate.Utils do
   import Macro, only: [camelize: 1]
 
+  @spec otp_app() :: atom()
   def otp_app do
     Mix.Project.config() |> Keyword.fetch!(:app)
   end
 
+  @spec module() :: String.t()
   def module do
     otp_app = otp_app()
 
@@ -14,6 +16,7 @@ defmodule Mate.Utils do
     end
   end
 
+  @spec module_name(atom() | String.t()) :: String.t()
   def module_name(%module{}), do: module_name(module)
 
   def module_name(module) when not is_binary(module) do
@@ -23,6 +26,8 @@ defmodule Mate.Utils do
   def module_name("Elixir." <> module), do: module_name(module)
   def module_name(module), do: module
 
+  @spec random_id() :: String.t()
+  @spec random_id(integer()) :: String.t()
   def random_id(len \\ 32) do
     :crypto.strong_rand_bytes(len) |> Base.hex_encode32(padding: false)
   end

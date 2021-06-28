@@ -1,4 +1,5 @@
 defmodule Mate.Step.CopyToStorage do
+  @moduledoc "This copies the release tarball to your local machine."
   use Mate.Pipeline.Step
 
   @impl true

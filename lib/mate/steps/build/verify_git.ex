@@ -1,4 +1,17 @@
 defmodule Mate.Step.VerifyGit do
+  @moduledoc """
+  This verifies git both on the local machine and the build server.
+
+  ## Local Machine
+  On your local machine it will ensure there is a git remote configured for the
+  current remote (e.g. staging, production) to the build server. It will also
+  get the name of the current branch on your local machine.
+
+  ## Build Server
+  On the build server it will ensure that the build path exists, that it is a
+  git repository, that is is configured to receive commits, it is given a hard
+  reset and checkout to the same branch that is currently used on the local machine.
+  """
   use Mate.Pipeline.Step
 
   @impl true

@@ -1,4 +1,5 @@
 defmodule Mate.Step.NpmBuild do
+  @moduledoc "This will run `npm run deploy` on the build server."
   use Mate.Pipeline.Step
 
   @impl true

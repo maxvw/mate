@@ -5,6 +5,8 @@ defmodule Mate.Pipeline.Step do
       alias Mate.Utils
       use Mate.Session
 
+      @spec bail(String.t()) :: no_return
+      @spec bail(String.t(), String.t()) :: no_return
       defp bail(message, error \\ nil) do
         if error,
           do: Mix.raise("#{message}\r\n\r\n#{error}"),
@@ -16,5 +18,5 @@ defmodule Mate.Pipeline.Step do
   @doc """
   Run this step within the given session
   """
-  @callback run(session :: Session.t()) :: {:ok, Session.t()} | {:error, term()}
+  @callback run(session :: Mate.Session.t()) :: {:ok, Mate.Session.t()} | {:error, any()}
 end

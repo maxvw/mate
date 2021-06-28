@@ -1,4 +1,5 @@
 defmodule Mate.Step.StartRelease do
+  @moduledoc "Starts or restarts the new release on the remote release servers."
   use Mate.Pipeline.Step
 
   @impl true

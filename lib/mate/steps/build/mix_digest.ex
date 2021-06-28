@@ -1,4 +1,5 @@
 defmodule Mate.Step.MixDigest do
+  @moduledoc "This will run `mix phx.digest.clean` and `mix phx.digest` on the build server."
   use Mate.Pipeline.Step
 
   @impl true

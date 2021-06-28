@@ -8,9 +8,21 @@ defmodule Mate.Config do
     :steps,
     driver: Mate.Driver.SSH,
     mix_env: :dev,
+    clean_paths: ~w{_build rel priv/generated priv/static},
     remotes: []
   ]
 
+  @type t() :: %__MODULE__{
+          otp_app: atom(),
+          module: String.t(),
+          steps: list(atom()) | function(),
+          driver: atom(),
+          mix_env: atom(),
+          clean_paths: list(String.t()),
+          remotes: list(Remote.t())
+        }
+
+  @spec read!() :: Mate.Config.t()
   def read! do
     config = Config.Reader.read!(".mate.exs")
     remotes = config |> Keyword.drop([:mate])
@@ -21,6 +33,7 @@ defmodule Mate.Config do
     |> parse_steps(config.steps)
   end
 
+  @spec find_remote(Mate.Config.t(), atom() | String.t()) :: {:ok, Remote.t()} | {:error, any()}
   def find_remote(%{remotes: []}, _), do: {:error, :no_remotes}
   def find_remote(%{remotes: [remote | _]}, nil), do: {:ok, remote}
 
@@ -33,6 +46,7 @@ defmodule Mate.Config do
     end
   end
 
+  @spec find_remote!(Mate.Config.t(), atom() | String.t()) :: Remote.t()
   def find_remote!(config, remote) do
     find_remote(config, remote)
     |> case do
@@ -42,6 +56,7 @@ defmodule Mate.Config do
     end
   end
 
+  @spec parse_remotes(Mate.Config.t(), list(keyword())) :: Mate.Config.t()
   defp parse_remotes(config, remotes) do
     remotes =
       remotes
@@ -50,6 +65,7 @@ defmodule Mate.Config do
     %{config | remotes: remotes}
   end
 
+  @spec parse_steps(Mate.Config.t(), function()) :: Mate.Config.t()
   defp parse_steps(config, steps_fn) when is_function(steps_fn) do
     default_steps = Pipeline.default_steps()
 
@@ -63,10 +79,8 @@ defmodule Mate.Config do
     %{config | steps: steps}
   end
 
+  @spec parse_steps(Mate.Config.t(), list(atom())) :: Mate.Config.t()
   defp parse_steps(config, steps) when is_list(steps) do
     %{config | steps: steps}
   end
-
-  defp parse_steps(config, _),
-    do: %{config | steps: Pipeline.default_steps()}
 end

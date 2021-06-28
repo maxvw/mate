@@ -1,4 +1,5 @@
 defmodule Mate.Step.MixDeps do
+  @moduledoc "This will install the mix dependencies."
   use Mate.Pipeline.Step
 
   @impl true
