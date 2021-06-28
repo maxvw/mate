@@ -1,4 +1,9 @@
 defmodule Mate.Remote do
+  @moduledoc """
+  This module stores all information about a remote.
+
+  A remote in `mate` is your server environment, e.g. staging or production.
+  """
   defstruct [
     :id,
     :server,

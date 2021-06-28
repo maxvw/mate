@@ -13,7 +13,7 @@ defmodule Mate.Step.MixDeps do
     mix deps.get --only prod
     """
 
-    with {:error, error} <- Mate.remote_script(session, script),
+    with {:error, error} <- remote_script(session, script),
          do: bail("Failed to download mix dependencies.", error)
 
     {:ok, session}

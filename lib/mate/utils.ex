@@ -1,4 +1,7 @@
 defmodule Mate.Utils do
+  @moduledoc """
+  This module contains some small helper utilities.
+  """
   import Macro, only: [camelize: 1]
 
   @spec otp_app() :: atom()
@@ -16,7 +19,7 @@ defmodule Mate.Utils do
     end
   end
 
-  @spec module_name(atom() | String.t()) :: String.t()
+  @spec module_name(map() | atom() | String.t()) :: String.t()
   def module_name(%module{}), do: module_name(module)
 
   def module_name(module) when not is_binary(module) do

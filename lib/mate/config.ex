@@ -1,4 +1,55 @@
 defmodule Mate.Config do
+  @moduledoc """
+  The configuration for mate deployments is stored in your applications root
+  directory, in a file named `.mate.exs`. This uses `import Config` as you might
+  already be used to.
+
+  To get started you can use the mix task `mix mate.init` to help generate one for you.
+
+  The configuration exists out of two parts:
+
+  ## 1. Mate configuration
+  This configures `mate` itself, a full example would be:
+
+      config :mate,
+        otp_app: :my_app,
+        driver: Mate.Driver.SSH,
+        mix_env: :dev,
+        clean_paths: ~w{_build rel priv/generated priv/static}
+
+  You can also customise the build steps that are executed, but more information
+  about that can be found in `Mate.Pipeline`.
+
+  ## 2. Remote configuration
+  You can specify one or more remotes, for example you could configure a staging
+  and production environment. But you can add as many as you want, with whichever
+  names you want to use.
+
+  A remote ends up as a `%Mate.Remote{}` struct, so a very complete example is:
+
+      config :staging,
+        build_server: "build.example.com",
+        deploy_server: "www.example.com",
+        build_path: "/tmp/build/my-app",
+        release_path: "/opt/my-app",
+        storage_path: "/mtn/archives/my-app",
+        build_secrets: %{
+          "prod.secret.exs" => "/home/elixir/secrets/prod.secret.exs"
+        }
+
+  If both servers are the same you can also opt to just configure `server` instead
+  of having to specify both `build_server` and `deploy_server`. For small setups it
+  might be more likely for you to not have a separate build server yet.
+
+      config :staging,
+        server: "www.example.com",
+
+  You can also specify multiple deploy servers by turning them into a list as such:
+
+      config :staging,
+        deploy_server: ["www1.example.com", "www2.example.com", "www3.example.com"]
+
+  """
   alias Mate.Remote
   alias Mate.Pipeline
 
@@ -15,7 +66,7 @@ defmodule Mate.Config do
   @type t() :: %__MODULE__{
           otp_app: atom(),
           module: String.t(),
-          steps: list(atom()) | function(),
+          steps: list(atom()) | function() | nil,
           driver: atom(),
           mix_env: atom(),
           clean_paths: list(String.t()),
@@ -82,5 +133,10 @@ defmodule Mate.Config do
   @spec parse_steps(Mate.Config.t(), list(atom())) :: Mate.Config.t()
   defp parse_steps(config, steps) when is_list(steps) do
     %{config | steps: steps}
+  end
+
+  @spec parse_steps(Mate.Config.t(), nil) :: Mate.Config.t()
+  defp parse_steps(config, nil) do
+    %{config | steps: Pipeline.default_steps()}
   end
 end

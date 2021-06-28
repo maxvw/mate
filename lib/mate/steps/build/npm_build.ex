@@ -11,7 +11,7 @@ defmodule Mate.Step.NpmBuild do
     npm run deploy
     """
 
-    with {:error, error} <- Mate.remote_script(session, script),
+    with {:error, error} <- remote_script(session, script),
          do: bail("Failed to build front-end dependencies.", error)
 
     {:ok, session}

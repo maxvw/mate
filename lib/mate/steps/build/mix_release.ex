@@ -12,11 +12,11 @@ defmodule Mate.Step.MixRelease do
     mix release --overwrite
     """
 
-    with {:ok, stdout} <- Mate.remote_script(session, script),
+    with {:ok, stdout} <- remote_script(session, script),
          {:ok, tar_gz} <- find_tar_path(stdout) do
       {:ok, assign(session, :release_archive, tar_gz)}
     else
-      {:error, :not_found} ->
+      {:error, "tar.gz not found"} ->
         bail("Could not find tar.gz release, is your mix project configured with `:tar`?")
 
       {:error, error} ->
@@ -24,10 +24,11 @@ defmodule Mate.Step.MixRelease do
     end
   end
 
+  @spec find_tar_path(String.t()) :: {:ok, String.t()} | {:error, atom()}
   defp find_tar_path(stdout) do
     case Regex.scan(~r/\/[^ ]+\.tar\.gz/, stdout) do
       [[tar_gz]] -> {:ok, tar_gz}
-      _ -> {:error, :not_found}
+      _ -> {:error, "tar.gz not found"}
     end
   end
 end

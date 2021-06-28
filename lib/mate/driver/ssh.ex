@@ -1,4 +1,10 @@
 defmodule Mate.Driver.SSH do
+  @moduledoc """
+  The SSH driver is used to execute commands via SSH.
+
+  It will maintain a connection using `ControlMaster` and send commands and/or
+  files over that connection, instead of reconnecting for every given command.
+  """
   alias Mate.Utils
   use Mate.Session
   use Mate.Driver

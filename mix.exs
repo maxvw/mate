@@ -12,6 +12,12 @@ defmodule Mate.MixProject do
       package: package(),
       deps: deps(),
       name: "Mate",
+      docs: [
+        main: "about",
+        extras: [
+          "README.md": [filename: "about", title: "About Mate"]
+        ]
+      ],
       source_url: "https://github.com/maxvw/mate"
     ]
   end

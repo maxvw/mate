@@ -1,4 +1,34 @@
 defmodule Mate.Pipeline do
+  @moduledoc """
+  This module keeps track of the build and deploy pipelines.
+
+  It will use the given `steps` from your `Mate.Config` to either build or deploy
+  your application on the specified servers. The default steps will attempt to sniff
+  whether or not you are in need of the assets pipeline, which uses `npm` by default.
+
+  The pipeline can be updated with custom steps using the configuration file `.mate.exs`,
+  for example you can add a custom step module with the `Mate.Pipeline.Step` behaviour.
+
+      config :mate,
+        steps: fn steps, pipeline ->
+          pipeline.insert_before(steps, Mate.Step.VerifyGit, CustomStep)
+        end,
+
+        defmodule CustomStep do
+          use Mate.Pipeline.Step
+
+          @impl true
+          def run(session) do
+            IO.puts("Execute my custom code")
+            {:ok, session}
+          end
+        end
+
+  You can also use useful commands like `local_cmd/2`, `local_cmd/3`,
+  `local_script/2`, `remote_cmd/2`, `remote_cmd/3`, `remote_script/2`,
+  `copy_from/3` and `copy_to/3` to interact with the local machine or with
+  the build server in various ways.
+  """
   alias Mate.Utils
 
   alias Mate.Step.{
@@ -65,7 +95,7 @@ defmodule Mate.Pipeline do
   def run(%Session{pipeline: %{steps: steps}} = session) do
     hosts =
       case session do
-        %{context: :build} -> [session.remote.build_server]
+        %{context: :build} -> [[session.remote.build_server] |> List.first()]
         %{context: :deploy} -> [session.remote.deploy_server]
         %{context: context} -> Mix.raise("Unknown context (#{context})")
       end

@@ -8,7 +8,7 @@ defmodule Mate.Step.CopyToStorage do
     archive_name = Path.basename(remote_path)
     local_path = Path.absname(archive_name)
 
-    with {:error, error} <- Mate.copy_from(session, remote_path, local_path),
+    with {:error, error} <- copy_from(session, remote_path, local_path),
          do: bail("Failed to copy #{archive_name} to local storage.", error)
 
     {:ok, session}

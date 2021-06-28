@@ -1,4 +1,14 @@
 defmodule Mate.Driver do
+  @moduledoc """
+  This is the behaviour for Mate Drivers.
+
+  The idea behind supporting multiple drivers is allowing the user to decide
+  how and where they want to build their application. By default is will use
+  the SSH driver, but maybe in the near future there will be other built-in
+  drivers. It is also possible to write your own, of course.
+
+  For an example I recommend looking at `Mate.Driver.SSH`.
+  """
   alias Mate.Session
 
   defmacro __using__(_) do
@@ -20,25 +30,25 @@ defmodule Mate.Driver do
   or whatever else might be needed for your new session.
   """
   @callback start(session :: Session.t(), host :: String.t()) ::
-              {:ok, Session.t()} | {:error, any()}
+              {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
   Executes a command using the driver
   """
   @callback exec(session :: Session.t(), command :: String.t(), args :: list(String.t())) ::
-              {:ok, Session.t()} | {:error, any()}
+              {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
   Copy a file from remote to local
   """
   @callback copy_from(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
-              {:ok, Session.t()} | {:error, any()}
+              {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
   Copy a file from local to remote
   """
   @callback copy_to(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
-              {:ok, Session.t()} | {:error, any()}
+              {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
   This one is optional and can be used to close the current connection, cleanup

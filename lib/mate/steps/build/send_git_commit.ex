@@ -8,7 +8,7 @@ defmodule Mate.Step.SendGitCommit do
     git_branch = session.assigns.git_branch
 
     with {:error, error} <-
-           Mate.local_cmd(session, "git", ~w{push #{git_remote_name} #{git_branch}}),
+           local_cmd(session, "git", ~w{push #{git_remote_name} #{git_branch}}),
          do: bail("Failed to push commit to build_server.", error)
 
     {:ok, session}

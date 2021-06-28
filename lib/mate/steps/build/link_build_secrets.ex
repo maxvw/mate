@@ -26,7 +26,7 @@ defmodule Mate.Step.LinkBuildSecrets do
       ln -sfn #{secret_file} #{remote.build_path}/config/#{config_name}
       """
 
-      with {:error, error} <- Mate.remote_script(session, script),
+      with {:error, error} <- remote_script(session, script),
            do: bail("Failed to link #{config_name} to #{secret_file}.", error)
     end
 

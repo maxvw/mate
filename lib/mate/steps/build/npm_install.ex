@@ -11,7 +11,7 @@ defmodule Mate.Step.NpmInstall do
     npm install -f
     """
 
-    with {:error, error} <- Mate.remote_script(session, script),
+    with {:error, error} <- remote_script(session, script),
          do: bail("Failed to download all front-end dependencies.", error)
 
     {:ok, session}

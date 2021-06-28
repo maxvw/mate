@@ -1,4 +1,12 @@
 defmodule Mate.Session do
+  @moduledoc """
+  This module contains all relevant information to the current session when
+  running the `mate.deploy` mix task.
+
+  It keeps track of the current configuration, build pipeline, assigns that
+  can be used to transfer information between build steps, the current context to
+  determine wheter this is a building session or a deploying session, and more!
+  """
   alias Mate.Pipeline
 
   defstruct [

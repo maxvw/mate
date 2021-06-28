@@ -9,7 +9,7 @@ defmodule Mate.Step.CleanBuild do
       |> Enum.map(&Path.join(remote.build_path, &1))
 
     for clean_path <- absolute_clean_paths do
-      with {:error, error} <- Mate.remote_cmd(session, "rm", ["-rf", clean_path]),
+      with {:error, error} <- remote_cmd(session, "rm", ["-rf", clean_path]),
            do: bail("Failed to clean build directory: #{clean_path}", error)
     end
 

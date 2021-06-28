@@ -16,7 +16,7 @@ defmodule Mate.Step.StartRelease do
     fi;
     """
 
-    with {:error, error} <- Mate.remote_script(session, script),
+    with {:error, error} <- remote_script(session, script),
          do: bail("Failed to start #{otp_app}.", error)
 
     {:ok, session}

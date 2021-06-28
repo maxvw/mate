@@ -25,13 +25,13 @@ defmodule Mate.Step.VerifyGit do
     rm test-write
     """
 
-    with {:error, _error} <- Mate.remote_script(session, test_writable),
+    with {:error, _error} <- remote_script(session, test_writable),
          do: bail("Build user not allowed to write to #{remote.build_path}")
 
     # Understand local branch
     branch =
       with {:ok, branch} when branch != "" <-
-             Mate.local_cmd(session, "git", ~w{rev-parse --abbrev-ref HEAD}) do
+             local_cmd(session, "git", ~w{rev-parse --abbrev-ref HEAD}) do
         branch
       else
         {:ok, ""} ->
@@ -52,7 +52,7 @@ defmodule Mate.Step.VerifyGit do
     """
 
     # Setup remote
-    with {:error, error} <- Mate.remote_script(session, script),
+    with {:error, error} <- remote_script(session, script),
          do: bail("Failed to ensure git on remote host.", error)
 
     # Setup local
@@ -60,9 +60,9 @@ defmodule Mate.Step.VerifyGit do
     git_remote_url = "#{remote.build_server}:#{remote.build_path}"
 
     with {:error, _error} <-
-           Mate.local_cmd(session, "git", ~w{remote get-url #{git_remote_name}}),
+           local_cmd(session, "git", ~w{remote get-url #{git_remote_name}}),
          {:error, error} <-
-           Mate.local_cmd(session, "git", ~w{remote add #{git_remote_name} #{git_remote_url}}),
+           local_cmd(session, "git", ~w{remote add #{git_remote_name} #{git_remote_url}}),
          do: bail("Failed to ensure remote origin on local git repository.", error)
 
     {:ok, session |> assign(:git_branch, branch)}

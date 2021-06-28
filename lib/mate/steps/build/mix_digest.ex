@@ -13,7 +13,7 @@ defmodule Mate.Step.MixDigest do
     mix phx.digest
     """
 
-    with {:error, error} <- Mate.remote_script(session, script),
+    with {:error, error} <- remote_script(session, script),
          do: bail("Failed to create front-end digest.", error)
 
     {:ok, session}
