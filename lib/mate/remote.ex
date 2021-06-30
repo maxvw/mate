@@ -45,7 +45,7 @@ defmodule Mate.Remote do
     deploy_server = Map.get(remote, :deploy_server) || remote.server
 
     if is_nil(build_server), do: Mix.raise("Missing build server configuration")
-    if is_nil(deploy_server), do: Mix.raise("Missing build server configuration")
+    if is_nil(deploy_server), do: Mix.raise("Missing deploy server configuration")
 
     %{remote | build_server: build_server, deploy_server: deploy_server}
   end

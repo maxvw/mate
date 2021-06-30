@@ -12,7 +12,7 @@ defmodule Mate.Step.NpmInstall do
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to download all front-end dependencies.", error)
+         do: bail(session, "Failed to download all front-end dependencies.", error)
 
     {:ok, session}
   end

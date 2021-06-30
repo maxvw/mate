@@ -17,10 +17,13 @@ defmodule Mate.Step.MixRelease do
       {:ok, assign(session, :release_archive, tar_gz)}
     else
       {:error, "tar.gz not found"} ->
-        bail("Could not find tar.gz release, is your mix project configured with `:tar`?")
+        bail(
+          session,
+          "Could not find tar.gz release, is your mix project configured with `:tar`?"
+        )
 
       {:error, error} ->
-        bail("Failed to run mix release.", error)
+        bail(session, "Failed to run mix release.", error)
     end
   end
 

@@ -15,7 +15,7 @@ defmodule Mate.Step.UnarchiveRelease do
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to unarchive #{archive_name}.", error)
+         do: bail(session, "Failed to unarchive #{archive_name}.", error)
 
     {:ok, session}
   end

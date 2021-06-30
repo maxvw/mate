@@ -12,7 +12,7 @@ defmodule Mate.Step.NpmBuild do
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to build front-end dependencies.", error)
+         do: bail(session, "Failed to build front-end dependencies.", error)
 
     {:ok, session}
   end

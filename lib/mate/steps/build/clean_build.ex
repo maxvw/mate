@@ -10,7 +10,7 @@ defmodule Mate.Step.CleanBuild do
 
     for clean_path <- absolute_clean_paths do
       with {:error, error} <- remote_cmd(session, "rm", ["-rf", clean_path]),
-           do: bail("Failed to clean build directory: #{clean_path}", error)
+           do: bail(session, "Failed to clean build directory: #{clean_path}", error)
     end
 
     {:ok, session}

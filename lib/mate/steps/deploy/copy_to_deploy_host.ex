@@ -19,10 +19,10 @@ defmodule Mate.Step.CopyToDeployHost do
     """
 
     with {:error, _error} <- remote_script(session, test_writable),
-         do: bail("Deploy user not allowed to write to #{remote.release_path}")
+         do: bail(session, "Deploy user not allowed to write to #{remote.release_path}")
 
     with {:error, error} <- copy_to(session, local_path, remote_path),
-         do: bail("Failed to copy #{archive_name} to deploy host.", error)
+         do: bail(session, "Failed to copy #{archive_name} to deploy host.", error)
 
     {:ok, session}
   end

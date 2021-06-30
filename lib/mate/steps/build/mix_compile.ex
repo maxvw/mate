@@ -13,7 +13,7 @@ defmodule Mate.Step.MixCompile do
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to compile application.", error)
+         do: bail(session, "Failed to compile application.", error)
 
     {:ok, session}
   end
