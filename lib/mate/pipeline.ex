@@ -11,7 +11,7 @@ defmodule Mate.Pipeline do
 
       config :mate,
         steps: fn steps, pipeline ->
-          pipeline.insert_before(steps, Mate.Step.VerifyGit, CustomStep)
+          pipeline.insert_before(steps, Mate.Step.CleanBuild, CustomStep)
         end,
 
         defmodule CustomStep do
@@ -35,14 +35,14 @@ defmodule Mate.Pipeline do
     CopyToStorage,
     LinkBuildSecrets,
     CleanBuild,
+    MixCompile,
     MixDigest,
     MixDeps,
     MixRelease,
     NpmBuild,
     NpmInstall,
-    SendGitCommit,
+    PrepareSource,
     VerifyElixir,
-    VerifyGit,
     VerifyNode
   }
 
@@ -65,11 +65,11 @@ defmodule Mate.Pipeline do
 
     steps = [
       VerifyElixir,
-      VerifyGit,
-      SendGitCommit,
+      PrepareSource,
       LinkBuildSecrets,
       CleanBuild,
       MixDeps,
+      MixCompile,
       MixRelease,
       CopyToStorage
     ]

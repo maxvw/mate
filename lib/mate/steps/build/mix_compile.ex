@@ -1,5 +1,5 @@
-defmodule Mate.Step.MixDeps do
-  @moduledoc "This will install the mix dependencies."
+defmodule Mate.Step.MixCompile do
+  @moduledoc "This will run `mix compile` on the build server."
   use Mate.Pipeline.Step
 
   @impl true
@@ -9,12 +9,11 @@ defmodule Mate.Step.MixDeps do
     set -euo pipefail
     export MIX_ENV="#{config.mix_env}"
     cd "#{remote.build_path}"
-    mix local.hex --force && \
-      mix deps.get --only prod
+    mix compile
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to download mix dependencies.", error)
+         do: bail("Failed to compile application.", error)
 
     {:ok, session}
   end
