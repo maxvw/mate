@@ -9,7 +9,7 @@ defmodule Mate.Step.PrepareSource do
   def run(%{driver: driver} = session) do
     with true <- function_exported?(driver, :prepare_source, 1),
          {:error, error} <- driver.prepare_source(session),
-         do: bail("Failed to push commit to build_server.", error)
+         do: bail(session, "Failed to push commit to build_server.", error)
 
     {:ok, session}
   end

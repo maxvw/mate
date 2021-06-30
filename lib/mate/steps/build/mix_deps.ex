@@ -14,7 +14,7 @@ defmodule Mate.Step.MixDeps do
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to download mix dependencies.", error)
+         do: bail(session, "Failed to download mix dependencies.", error)
 
     {:ok, session}
   end

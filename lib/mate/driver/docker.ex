@@ -2,9 +2,26 @@ defmodule Mate.Driver.Docker do
   @moduledoc """
   The Docker driver is used to execute commands via Docker.
 
-  Configure the docker image to use by setting it as the `build_server` in your
-  local `.mate.exs` configuration file. The image you are using should contain
-  everything you need for your application, for example Elixir and NodeJS.
+  Configure the image you want to use by setting it in the `driver_opts` Keyword
+  list in your `.mate.exs` configuration file. For example:
+
+      config :mate,
+        driver: Mate.Driver.Docker,
+        driver_opts: [
+          image: "bitwalker/alpine-elixir-phoenix"
+        ]
+
+  It will mount your current repository in `/repo`, but it will clone your latest
+  commit to the specified `build_path`. If you have a secret file you want locally
+  you can link it from `/repo`. For example:
+
+      config :staging,
+        server: "www.example.com",
+        build_path: "/tmp/mate/my-app",
+        build_secrets: %{
+          "prod.secret.exs" => "/repo/config/prod.secret.exs"
+        }
+
   """
   alias Mate.Utils
   use Mate.Session
@@ -12,12 +29,16 @@ defmodule Mate.Driver.Docker do
   use GenServer
 
   @impl true
-  def start(session, host) do
+  def start(session, _host) do
+    image =
+      session.config.driver_opts
+      |> Keyword.get(:image, "bitwalker/alpine-elixir-phoenix")
+
     with {:ok, conn} <-
            GenServer.start_link(__MODULE__, %{
              conn: nil,
-             host: host,
              args: [],
+             image: image,
              docker_bin: nil,
              container_name: nil,
              container_id: nil,
@@ -85,12 +106,13 @@ defmodule Mate.Driver.Docker do
       docker_bin,
       "run",
       "--rm",
+      "--init",
       "-t",
       "-v",
       current_dir <> ":/repo",
       "--name",
       container_name,
-      state.host,
+      state.image,
       "/bin/bash" | state.args
     ]
 
@@ -133,7 +155,7 @@ defmodule Mate.Driver.Docker do
   def handle_call(:stop, _, state) do
     container_id = state.container_id
     docker_bin = state.docker_bin
-    args = ["stop", container_id]
+    args = ["stop", "-t", "1", container_id]
 
     case System.cmd(docker_bin, args, stderr_to_stdout: true) do
       {stdout, _exit_status = 0} ->

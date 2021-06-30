@@ -134,6 +134,18 @@ defmodule Mate.Helpers do
     driver.copy_to(session, src, dest)
   end
 
+  @spec bail(Mate.Session.t(), String.t()) :: no_return
+  @spec bail(Mate.Session.t(), String.t(), String.t()) :: no_return
+  def bail(%{driver: driver} = session, message, error \\ "") do
+    if function_exported?(driver, :close, 1) do
+      driver.close(session)
+    end
+
+    if error != "",
+      do: Mix.raise("#{message}\r\n\r\n#{error}"),
+      else: Mix.raise(message)
+  end
+
   @spec print_result({:ok, String.t()} | {:error, String.t()}, String.t(), integer()) ::
           {:ok, String.t()} | {:error, String.t()}
   defp print_result({:ok, stdout} = result, tag, verbosity) when verbosity > 1 do

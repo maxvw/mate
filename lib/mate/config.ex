@@ -58,6 +58,7 @@ defmodule Mate.Config do
     :module,
     :steps,
     driver: Mate.Driver.SSH,
+    driver_opts: [],
     mix_env: :dev,
     clean_paths: ~w{_build rel priv/generated priv/static},
     remotes: []
@@ -68,6 +69,7 @@ defmodule Mate.Config do
           module: String.t(),
           steps: list(atom()) | function() | nil,
           driver: atom(),
+          driver_opts: keyword(),
           mix_env: atom(),
           clean_paths: list(String.t()),
           remotes: list(Remote.t())

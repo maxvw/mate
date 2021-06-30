@@ -8,14 +8,6 @@ defmodule Mate.Pipeline.Step do
       import Mate.Helpers
       alias Mate.Utils
       use Mate.Session
-
-      @spec bail(String.t()) :: no_return
-      @spec bail(String.t(), String.t()) :: no_return
-      defp bail(message, error \\ "") do
-        if error != "",
-          do: Mix.raise("#{message}\r\n\r\n#{error}"),
-          else: Mix.raise(message)
-      end
     end
   end
 

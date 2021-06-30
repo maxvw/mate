@@ -26,7 +26,7 @@ defmodule Mate.Step.VerifyGit do
     """
 
     with {:error, _error} <- remote_script(session, test_writable),
-         do: bail("Build user not allowed to write to #{remote.build_path}")
+         do: bail(session, "Build user not allowed to write to #{remote.build_path}")
 
     # Understand local branch
     branch =
@@ -35,10 +35,10 @@ defmodule Mate.Step.VerifyGit do
         branch
       else
         {:ok, ""} ->
-          bail("Current git branch name empty? Check `git rev-parse --abbrev-ref HEAD`")
+          bail(session, "Current git branch name empty? Check `git rev-parse --abbrev-ref HEAD`")
 
         {:error, error} ->
-          bail("Failed to get current branch name", error)
+          bail(session, "Failed to get current branch name", error)
       end
 
     script = """
@@ -53,7 +53,7 @@ defmodule Mate.Step.VerifyGit do
 
     # Setup remote
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to ensure git on remote host.", error)
+         do: bail(session, "Failed to ensure git on remote host.", error)
 
     # Setup local
     git_remote_name = "mate-#{remote.id}"
@@ -63,7 +63,7 @@ defmodule Mate.Step.VerifyGit do
            local_cmd(session, "git", ~w{remote get-url #{git_remote_name}}),
          {:error, error} <-
            local_cmd(session, "git", ~w{remote add #{git_remote_name} #{git_remote_url}}),
-         do: bail("Failed to ensure remote origin on local git repository.", error)
+         do: bail(session, "Failed to ensure remote origin on local git repository.", error)
 
     {:ok, session |> assign(:git_branch, branch)}
   end
