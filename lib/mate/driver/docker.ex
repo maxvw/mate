@@ -31,6 +31,7 @@ defmodule Mate.Driver.Docker do
 
   @impl true
   def close(%Session{conn: conn} = session) do
+    GenServer.call(conn, :stop, :infinity)
     GenServer.stop(conn, :normal, 5_000)
     {:ok, session}
   end
@@ -126,6 +127,23 @@ defmodule Mate.Driver.Docker do
              container_id: container_id,
              container_name: container_name
          }}
+    end
+  end
+
+  def handle_call(:stop, _, state) do
+    container_id = state.container_id
+    docker_bin = state.docker_bin
+    args = ["stop", container_id]
+
+    case System.cmd(docker_bin, args, stderr_to_stdout: true) do
+      {stdout, _exit_status = 0} ->
+        {:reply, {:ok, String.trim(stdout)}, state}
+
+      {stdout, exit_status} ->
+        {:reply,
+         {:error,
+          "Remote command exited with non-ok exit status (#{exit_status})\n\nCommand: #{docker_bin} #{Enum.join(args, " ")}\nOutput:\n#{stdout}"},
+         state}
     end
   end
 
