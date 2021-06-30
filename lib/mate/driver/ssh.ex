@@ -12,13 +12,11 @@ defmodule Mate.Driver.SSH do
 
   @impl true
   def start(session, host) do
-    custom_args = []
-
     with {:ok, conn} <-
            GenServer.start_link(__MODULE__, %{
              conn: nil,
              host: host,
-             args: custom_args,
+             args: [],
              socket_file: nil,
              session: session
            }) do
@@ -40,6 +38,11 @@ defmodule Mate.Driver.SSH do
   end
 
   @impl true
+  def exec_script(session, script) do
+    exec(session, script, [])
+  end
+
+  @impl true
   def copy_from(%Session{conn: conn, remote: remote}, remote_src, local_dest) do
     remote_abs = remote.build_server <> ":" <> remote_src
     GenServer.call(conn, {:scp, remote_abs, local_dest}, :infinity)
@@ -47,8 +50,18 @@ defmodule Mate.Driver.SSH do
 
   @impl true
   def copy_to(%Session{conn: conn, remote: remote}, local_src, remote_dest) do
-    remote_abs = remote.build_server <> ":" <> remote_dest
+    remote_abs = remote.deploy_server <> ":" <> remote_dest
     GenServer.call(conn, {:scp, local_src, remote_abs}, :infinity)
+  end
+
+  @impl true
+  def prepare_source(session) do
+    with {:ok, session} <- Mate.Step.VerifyGit.run(session),
+         {:ok, session} <- Mate.Step.SendGitCommit.run(session) do
+      {:ok, session}
+    else
+      error -> error
+    end
   end
 
   @impl true

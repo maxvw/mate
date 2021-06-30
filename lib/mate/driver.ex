@@ -39,6 +39,17 @@ defmodule Mate.Driver do
               {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
+  Executes a script using the driver
+  """
+  @callback exec_script(session :: Session.t(), script :: String.t()) ::
+              {:ok, Session.t()} | {:error, String.t()}
+
+  @doc """
+  Prepare source
+  """
+  @callback prepare_source(session :: Session.t()) :: {:ok, Session.t()} | {:error, String.t()}
+
+  @doc """
   Copy a file from remote to local
   """
   @callback copy_from(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
@@ -56,5 +67,5 @@ defmodule Mate.Driver do
   """
   @callback close(session :: Session.t()) :: {:ok, Session.t()}
 
-  @optional_callbacks close: 1
+  @optional_callbacks close: 1, prepare_source: 1
 end
