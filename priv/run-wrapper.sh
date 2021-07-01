@@ -6,6 +6,10 @@
 exec "$@" &
 pid1=$!
 
+# The docker client needs to be killed with the right signal for it to tell
+# the docker daemon to kill the container as well.
+trap "kill -1 $pid1" SIGINT SIGKILL EXIT
+
 # Silence warnings from here on
 exec >/dev/null 2>&1
 
@@ -13,7 +17,7 @@ exec >/dev/null 2>&1
 # kill running program when stdin closes
 exec 0<&0 $(
   while read; do :; done
-  kill -KILL $pid1
+  kill -1 $pid1
 ) &
 pid2=$!
 
