@@ -17,7 +17,7 @@ Add `mate` to your dependencies in the `mix.exs` file, you only need it for `:de
 ```elixir
 def deps do
   [
-    {:mate, "~> 0.1.1", only: :dev}
+    {:mate, "~> 0.1.2", only: :dev}
   ]
 end
 ```

@@ -4,7 +4,7 @@ defmodule Mate.MixProject do
   def project do
     [
       app: :mate,
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       dialyzer: [plt_add_apps: [:mix]],
@@ -24,7 +24,7 @@ defmodule Mate.MixProject do
 
   defp package() do
     [
-      files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
+      files: ~w(lib priv .formatter.exs mix.exs README* LICENSE*),
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/maxvw/mate"}
     ]
