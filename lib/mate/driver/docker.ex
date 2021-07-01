@@ -217,6 +217,11 @@ defmodule Mate.Driver.Docker do
   end
 
   @impl true
+  def terminate(_msg, state) do
+    handle_call(:stop, {}, state)
+  end
+
+  @impl true
   def handle_info({conn, {:data, _data}}, %{conn: conn} = state) do
     # TODO: Logging (optional?)
     {:noreply, state}
