@@ -1,10 +1,12 @@
 # Mate
 _Customisable Deployment for Elixir / Phoenix_
----
+
+[![Hex pm](http://img.shields.io/hexpm/v/mate.svg?style=flat)](https://hex.pm/packages/mate)
+[![Hex pm](http://img.shields.io/hexpm/l/mate.svg?style=flat)](https://hex.pm/packages/mate)
 
 Elixir is fun to work with, releasing should be fun too. This project aims to help with that.
 
-**NOTE** Documentation is one of the next things on my list.
+You can choose to build your release remotely via SSH, locally via Docker or just locally in general. Of course when building locally remember that the system architecture should match with your deploy servers. After building your application, you can also deploy it to one or multiple servers over an SSH connection.
 
 ## What about [edeliver](https://github.com/edeliver/edeliver)?
 It's the inspiration behind this, but I wanted something that is compatible with `mix release`, something more customisable and a codebase that is better readable. This project aims to be that, but as it is still early if you are looking for something more stable, [edeliver](https://github.com/edeliver/edeliver) might still be the better choice – for now.
@@ -13,11 +15,11 @@ It's the inspiration behind this, but I wanted something that is compatible with
 The documentation for `mate` can be found on [hexdocs.pm/mate](https://hexdocs.pm/mate/).
 
 ## Installation
-Add `mate` to your dependencies in the `mix.exs` file, you only need it for `:dev` as you run it locally from your machine.
+`mate` is available via [https://hex.pm/packages/mate](hex.pm). Just add `mate` to your dependencies in the `mix.exs` file, you only need it for `:dev` as you run it locally from your machine.
 ```elixir
 def deps do
   [
-    {:mate, "~> 0.1.2", only: :dev}
+    {:mate, "~> 0.1.3", only: :dev}
   ]
 end
 ```
