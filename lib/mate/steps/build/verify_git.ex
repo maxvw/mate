@@ -48,7 +48,6 @@ defmodule Mate.Step.VerifyGit do
     git init
     git config receive.denyCurrentBranch updateInstead
     git reset --hard
-    git checkout "#{branch}"
     """
 
     # Setup remote

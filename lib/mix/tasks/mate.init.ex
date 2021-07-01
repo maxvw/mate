@@ -46,16 +46,16 @@ defmodule Mix.Tasks.Mate.Init do
     Also make sure that `mix release` is configured to output a tarball,
     you can configure this in `mix.exs` with something like this:
 
-      def project do
-        [
-          releases: [
-            #{Mate.Utils.otp_app()}: [
-              include_executables_for: [:unix],
-              steps: [:assemble, :tar]
-            ]
-          ],
-        ]
-      end
+        def project do
+          [
+            releases: [
+              #{Mate.Utils.otp_app()}: [
+                include_executables_for: [:unix],
+                steps: [:assemble, :tar]
+              ]
+            ],
+          ]
+        end
 
     When everything is setup correctly, run `mix mate.deploy`.
     """)
@@ -66,23 +66,21 @@ defmodule Mix.Tasks.Mate.Init do
 
   config :mate,
     otp_app: :<%= @otp_app %>,
-    module: <%= @module %>,
-    mix_env: :prod
+    module: <%= @module %>
 
   config :staging,
     server: "example.com",
     build_path: "/tmp/mate/<%= @otp_app %>",
     release_path: "/opt/<%= @otp_app %>",
-    storage_path: "/home/elixir/release_archives/",
 
   # You can also specify secret files, if they are present on your build server.
-  # config :mate, :staging,
+  # config :staging,
   #   build_secrets: %{
   #     "prod.secret.exs" => "/mnt/secrets/prod.secret.exs"
   #   }
 
   # You can specify separate servers like this:
-  # config :mate, :staging,
+  # config :production,
   #   build_server: "build.example.com",
   #   deploy_server: "www.example.com"
   """)

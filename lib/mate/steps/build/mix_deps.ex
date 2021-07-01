@@ -9,8 +9,8 @@ defmodule Mate.Step.MixDeps do
     set -euo pipefail
     export MIX_ENV="#{config.mix_env}"
     cd "#{remote.build_path}"
-    mix local.hex --force && \
-      mix deps.get --only prod
+    mix local.hex --force
+    mix deps.get --only prod
     """
 
     with {:error, error} <- remote_script(session, script),

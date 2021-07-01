@@ -51,6 +51,17 @@ defmodule Mate.Driver.Docker do
   end
 
   @impl true
+  def current_host(%Session{conn: conn}) do
+    docker_context =
+      case GenServer.call(conn, :get_context) do
+        {:ok, current_context} -> current_context
+        _ -> "unknown"
+      end
+
+    "Docker (context: #{docker_context})"
+  end
+
+  @impl true
   def close(%Session{conn: conn} = session) do
     GenServer.call(conn, :stop, :infinity)
     GenServer.stop(conn, :normal, 5_000)
@@ -154,43 +165,27 @@ defmodule Mate.Driver.Docker do
 
   def handle_call(:stop, _, state) do
     container_id = state.container_id
-    docker_bin = state.docker_bin
     args = ["stop", "-t", "1", container_id]
+    result = docker(state, args)
+    {:reply, result, state}
+  end
 
-    case System.cmd(docker_bin, args, stderr_to_stdout: true) do
-      {stdout, _exit_status = 0} ->
-        {:reply, {:ok, String.trim(stdout)}, state}
-
-      {stdout, exit_status} ->
-        {:reply,
-         {:error,
-          "Remote command exited with non-ok exit status (#{exit_status})\n\nCommand: #{docker_bin} #{Enum.join(args, " ")}\nOutput:\n#{stdout}"},
-         state}
-    end
+  def handle_call(:get_context, _, state) do
+    args = ["context", "show"]
+    result = docker(state, args)
+    {:reply, result, state}
   end
 
   @impl true
   def handle_call({:exec, command, user_args}, _, state) do
     container_id = state.container_id
-    docker_bin = state.docker_bin
-
     args = ["exec", "-t", container_id, command | user_args]
-
-    case System.cmd(docker_bin, args, stderr_to_stdout: true) do
-      {stdout, _exit_status = 0} ->
-        {:reply, {:ok, String.trim(stdout)}, state}
-
-      {stdout, exit_status} ->
-        {:reply,
-         {:error,
-          "Remote command exited with non-ok exit status (#{exit_status})\n\nCommand: #{command} #{Enum.join(user_args, " ")}\nOutput:\n#{stdout}"},
-         state}
-    end
+    result = docker(state, args)
+    {:reply, result, state}
   end
 
   def handle_call({:copy, direction, src, dest}, _, state) do
     container_id = state.container_id
-    docker_bin = state.docker_bin
 
     src =
       if direction == :from,
@@ -203,17 +198,8 @@ defmodule Mate.Driver.Docker do
         else: dest
 
     args = ["cp", src, dest]
-
-    case System.cmd(docker_bin, args, stderr_to_stdout: true) do
-      {stdout, _exit_status = 0} ->
-        {:reply, {:ok, String.trim(stdout)}, state}
-
-      {stdout, exit_status} ->
-        {:reply,
-         {:error,
-          "Failed to copy #{src} command exited with non-ok exit status (#{exit_status})\nOutput:\n#{stdout}"},
-         state}
-    end
+    result = docker(state, args)
+    {:reply, result, state}
   end
 
   @impl true
@@ -234,5 +220,16 @@ defmodule Mate.Driver.Docker do
 
   def handle_info({conn, {:exit_status, status}}, %{conn: conn} = _state) do
     Mix.raise("Docker exited unexpectedly with exit code #{status}")
+  end
+
+  defp docker(%{docker_bin: docker_bin}, args) when is_list(args) do
+    case System.cmd(docker_bin, args, stderr_to_stdout: true) do
+      {stdout, _exit_status = 0} ->
+        {:ok, String.trim(stdout)}
+
+      {stdout, exit_status} ->
+        {:error,
+         "Docker command (#{args}) exited with non-ok exit status (#{exit_status})\nOutput:\n#{stdout}"}
+    end
   end
 end

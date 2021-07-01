@@ -34,4 +34,9 @@ defmodule Mate.Utils do
   def random_id(len \\ 32) do
     :crypto.strong_rand_bytes(len) |> Base.hex_encode32(padding: false)
   end
+
+  @spec empty?(nil | String.t()) :: boolean()
+  def empty?(string) when is_binary(string), do: String.trim("#{string}") == ""
+  def empty?(nil), do: true
+  def empty?(_), do: false
 end

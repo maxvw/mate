@@ -4,12 +4,13 @@ defmodule Mate.Remote do
 
   A remote in `mate` is your server environment, e.g. staging or production.
   """
+  alias Mate.Utils
+
   defstruct [
     :id,
     :server,
     :build_path,
     :release_path,
-    :storage_path,
     :build_server,
     :deploy_server,
     build_secrets: %{}
@@ -20,7 +21,6 @@ defmodule Mate.Remote do
           server: String.t(),
           build_path: String.t(),
           release_path: String.t(),
-          storage_path: String.t(),
           build_server: String.t(),
           deploy_server: String.t() | list(String.t()),
           build_secrets: map()
@@ -32,6 +32,7 @@ defmodule Mate.Remote do
     struct(__MODULE__, params)
     |> set_id(id)
     |> set_servers()
+    |> validate()
   end
 
   @spec set_id(Mate.Remote.t(), atom()) :: Mate.Remote.t()
@@ -44,9 +45,17 @@ defmodule Mate.Remote do
     build_server = Map.get(remote, :build_server) || remote.server
     deploy_server = Map.get(remote, :deploy_server) || remote.server
 
-    if is_nil(build_server), do: Mix.raise("Missing build server configuration")
-    if is_nil(deploy_server), do: Mix.raise("Missing deploy server configuration")
-
     %{remote | build_server: build_server, deploy_server: deploy_server}
+  end
+
+  @spec validate(Mate.Remote.t()) :: Mate.Remote.t()
+  defp validate(remote) do
+    if Utils.empty?(remote.build_server), do: Mix.raise("Missing build_server configuration")
+    if Utils.empty?(remote.deploy_server), do: Mix.raise("Missing deploy_server configuration")
+
+    if Utils.empty?(remote.build_path), do: Mix.raise("Missing build_path in configuration")
+    if Utils.empty?(remote.release_path), do: Mix.raise("Missing release_path in configuration")
+
+    remote
   end
 end

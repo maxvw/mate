@@ -11,7 +11,6 @@ defmodule Mate.Step.LinkBuildSecrets do
         server: "build-server",
         build_path: "/tmp/mate/project",
         release_path: "/home/elixir/releases/project",
-        storage_path: "/home/elixir/release_archives/",
         build_secrets: %{
           "prod.secret.exs" => "/mnt/secrets/prod.secret.exs"
         }

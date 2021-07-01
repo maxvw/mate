@@ -42,6 +42,11 @@ defmodule Mix.Tasks.Mate.Deploy do
     build_session = Session.new(config, remote: remote, verbosity: verbosity)
     {:ok, build_session} = Mate.Pipeline.run(build_session)
 
+    hosts = [remote.deploy_server] |> List.flatten() |> Enum.join(", ")
+
+    unless Mix.shell().yes?("Do you want to deploy this build to #{hosts}?"),
+      do: exit(:normal)
+
     Mix.shell().info(["Starting deploy on", " ", :bright, to_string(remote.id)])
 
     deploy_session =

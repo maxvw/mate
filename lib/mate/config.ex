@@ -14,7 +14,7 @@ defmodule Mate.Config do
       config :mate,
         otp_app: :my_app,
         driver: Mate.Driver.SSH,
-        mix_env: :dev,
+        mix_env: :prod,
         clean_paths: ~w{_build rel priv/generated priv/static}
 
   You can also customise the build steps that are executed, but more information
@@ -32,7 +32,6 @@ defmodule Mate.Config do
         deploy_server: "www.example.com",
         build_path: "/tmp/build/my-app",
         release_path: "/opt/my-app",
-        storage_path: "/mtn/archives/my-app",
         build_secrets: %{
           "prod.secret.exs" => "/home/elixir/secrets/prod.secret.exs"
         }
@@ -59,7 +58,7 @@ defmodule Mate.Config do
     :steps,
     driver: Mate.Driver.SSH,
     driver_opts: [],
-    mix_env: :dev,
+    mix_env: :prod,
     clean_paths: ~w{_build rel priv/generated priv/static},
     remotes: []
   ]

@@ -16,10 +16,12 @@ defmodule Mate.Driver do
     quote do
       @behaviour Mate.Driver
 
+      @spec set_conn(Session.t(), any()) :: Session.t()
       defp set_conn(session, conn) do
         %{session | conn: conn}
       end
 
+      @spec assign(Session.t(), atom(), any()) :: Session.t()
       defp assign(%{assigns: assigns} = session, key, value) when is_atom(key) do
         %{session | assigns: Keyword.put(assigns, key, value)}
       end
@@ -68,5 +70,12 @@ defmodule Mate.Driver do
   """
   @callback close(session :: Session.t()) :: {:ok, Session.t()}
 
-  @optional_callbacks close: 1, prepare_source: 1
+  @doc """
+  Returns a description of the current host (defaults to context hostname)
+  """
+  @callback current_host(session :: Session.t()) :: String.t()
+
+  @optional_callbacks close: 1,
+                      prepare_source: 1,
+                      current_host: 1
 end

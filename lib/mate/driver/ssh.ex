@@ -6,6 +6,7 @@ defmodule Mate.Driver.SSH do
   files over that connection, instead of reconnecting for every given command.
   """
   alias Mate.Utils
+  alias Mate.Pipeline
   use Mate.Session
   use Mate.Driver
   use GenServer
@@ -56,12 +57,10 @@ defmodule Mate.Driver.SSH do
 
   @impl true
   def prepare_source(session) do
-    with {:ok, session} <- Mate.Step.VerifyGit.run(session),
-         {:ok, session} <- Mate.Step.SendGitCommit.run(session) do
-      {:ok, session}
-    else
-      error -> error
-    end
+    {:ok,
+     session
+     |> Pipeline.run_step(Mate.Step.VerifyGit)
+     |> Pipeline.run_step(Mate.Step.SendGitCommit)}
   end
 
   @impl true
