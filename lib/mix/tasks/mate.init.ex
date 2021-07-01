@@ -6,6 +6,7 @@ defmodule Mix.Tasks.Mate.Init do
   @filename ".mate.exs"
 
   @switches [
+    docker: [:boolean, :keep],
     force: [:boolean, :keep]
   ]
 
@@ -18,6 +19,7 @@ defmodule Mix.Tasks.Mate.Init do
 
   ## Command line options
 
+    * `--docker` - create file with Docker driver as default
     * `-f`, `--force` - force create file, overwrite if one already exists
 
   """
@@ -30,7 +32,8 @@ defmodule Mix.Tasks.Mate.Init do
 
     assigns = [
       otp_app: Mate.Utils.otp_app(),
-      module: Mate.Utils.module()
+      module: Mate.Utils.module(),
+      docker?: Keyword.get(opts, :docker, false)
     ]
 
     create_file(@filename, config_template(assigns), force: force_write?)
@@ -63,17 +66,26 @@ defmodule Mix.Tasks.Mate.Init do
 
   embed_template(:config, """
   import Config
-
+  <%= unless @docker? do %>
   config :mate,
     otp_app: :<%= @otp_app %>,
     module: <%= @module %>
-
+  <% else %>
+  config :mate,
+    otp_app: :<%= @otp_app %>,
+    module: <%= @module %>,
+    driver: Mate.Driver.Docker,
+    driver_opts: [
+      image: "bitwalker/alpine-elixir-phoenix"
+    ]
+  <% end %>
+  # This simple configuration will build and deploy to the same server
   config :staging,
     server: "example.com",
     build_path: "/tmp/mate/<%= @otp_app %>",
     release_path: "/opt/<%= @otp_app %>",
 
-  # You can also specify secret files, if they are present on your build server.
+  # Specify secret files, if they are already present on your build server.
   # config :staging,
   #   build_secrets: %{
   #     "prod.secret.exs" => "/mnt/secrets/prod.secret.exs"
@@ -83,5 +95,12 @@ defmodule Mix.Tasks.Mate.Init do
   # config :production,
   #   build_server: "build.example.com",
   #   deploy_server: "www.example.com"
+
+  # For `deploy_server` you can also set a list like this:
+  # config :production,
+  #   deploy_server: [
+  #     "www1.example.com",
+  #     "www2.example.com"
+  #   ]
   """)
 end
