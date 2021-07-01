@@ -56,7 +56,7 @@ defmodule Mate.Helpers do
     if session.verbosity > 0,
       do: Mix.shell().info([:yellow, "local >", :reset, " ", script])
 
-    case System.cmd("/usr/bin/env", [script], stderr_to_stdout: true) do
+    case System.cmd("bash", ["-c", script], stderr_to_stdout: true) do
       {stdout, _exit_status = 0} ->
         {:ok, String.trim(stdout)}
 
