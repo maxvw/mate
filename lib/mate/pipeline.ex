@@ -101,7 +101,7 @@ defmodule Mate.Pipeline do
   def run(%Session{pipeline: %{steps: steps}} = session) do
     hosts =
       case session do
-        %{context: :build} -> [[session.remote.build_server] |> List.first()]
+        %{context: :build} -> session.remote.build_server
         %{context: :deploy} -> [session.remote.deploy_server]
         %{context: context} -> Mix.raise("Unknown context (#{context})")
       end
@@ -226,9 +226,8 @@ defmodule Mate.Pipeline do
   @spec do_perform(Session.t(), function()) :: {:ok, Session.t()} | {:error, any()}
   defp do_perform(session, step_fn) when is_function(step_fn) do
     case :erlang.fun_info(step_fn)[:arity] do
-      0 -> step_fn.()
       1 -> step_fn.(session)
-      _ -> {:error, "Custom step function should have either /0 or /1 arity."}
+      _ -> {:error, "Custom step function should have /1 arity."}
     end
   end
 

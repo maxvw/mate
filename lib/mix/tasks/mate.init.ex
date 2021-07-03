@@ -155,7 +155,7 @@ defmodule Mix.Tasks.Mate.Init do
   config :staging,
     server: "example.com",
     build_path: "/tmp/mate/<%= @otp_app %>",
-    release_path: "/opt/<%= @otp_app %>",
+    release_path: "/opt/<%= @otp_app %>"
 
   # Specify secret files, if they are already present on your build server.
   # config :staging,

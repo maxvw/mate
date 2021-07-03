@@ -26,9 +26,8 @@ defmodule Mate.Remote do
           build_secrets: map()
         }
 
-  @spec new(atom()) :: Mate.Remote.t()
   @spec new(atom(), map()) :: Mate.Remote.t()
-  def new(id, params \\ %{}) do
+  def new(id, params) do
     struct(__MODULE__, params)
     |> set_id(id)
     |> set_servers()
@@ -42,8 +41,14 @@ defmodule Mate.Remote do
 
   @spec set_servers(Mate.Remote.t()) :: Mate.Remote.t()
   defp set_servers(remote) do
-    build_server = Map.get(remote, :build_server) || remote.server
-    deploy_server = Map.get(remote, :deploy_server) || remote.server
+    build_server =
+      [Map.get(remote, :build_server) || remote.server]
+      |> List.flatten()
+      |> List.first()
+
+    deploy_server =
+      [Map.get(remote, :deploy_server) || remote.server || []]
+      |> List.flatten()
 
     %{remote | build_server: build_server, deploy_server: deploy_server}
   end

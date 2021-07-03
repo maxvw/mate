@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Mate.Deploy do
     {opts, argv} = OptionParser.parse!(args, strict: @switches, aliases: @aliases)
     verbosity = Keyword.get(opts, :verbose, 0)
 
-    config = Mate.Config.read!()
+    config = Mate.Config.read!(".mate.exs")
     remote = Mate.Config.find_remote!(config, List.first(argv))
 
     Mix.shell().info(["Starting build on", " ", :bright, to_string(remote.id)])

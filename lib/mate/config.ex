@@ -74,9 +74,9 @@ defmodule Mate.Config do
           remotes: list(Remote.t())
         }
 
-  @spec read!() :: Mate.Config.t()
-  def read! do
-    config = Config.Reader.read!(".mate.exs")
+  @spec read!(String.t()) :: Mate.Config.t()
+  def read!(filename) do
+    config = Config.Reader.read!(filename)
     remotes = config |> Keyword.drop([:mate])
     config = struct(__MODULE__, config[:mate])
 
