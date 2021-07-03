@@ -18,7 +18,7 @@ defmodule Mate.Driver.Local do
         build_path: "/tmp/mate/example",
         release_path: "/home/elixir/releases/example",
         build_secrets: %{
-          "prod.secret.exs" => "#{File.cwd!()}/config/prod.secret.exs"
+          "prod.secret.exs" => "\#{File.cwd!()}/config/prod.secret.exs"
         }
 
   """
