@@ -14,6 +14,13 @@ jobs:
       with:
         elixir-version: '1.12.0'
         otp-version: '24.0'
+    - name: Cache dialyzer plts directory
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-dialyzer
+      with:
+        path: priv/plts
+        key: ${{ env.cache-name }}-${{ hashFiles('**/mix.exs', '**/mix.lock') }}
     - name: Install dependencies
       run: mix deps.get
     - name: Check compiler warnings

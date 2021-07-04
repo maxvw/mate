@@ -7,7 +7,10 @@ defmodule Mate.MixProject do
       version: "0.1.3",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
-      dialyzer: [plt_add_apps: [:mix]],
+      dialyzer: [
+        plt_core_path: "priv/plts",
+        plt_add_apps: [:mix]
+      ],
       description: description(),
       package: package(),
       deps: deps(),
