@@ -1,6 +1,7 @@
 defmodule Mate.PipelineTest do
   use ExUnit.Case
   alias Mate.Pipeline
+  alias Mate.Driver.Test, as: TestDriver
 
   defmodule ExampleGood do
     use Mate.Pipeline.Step
@@ -154,6 +155,68 @@ defmodule Mate.PipelineTest do
     end
   end
 
-  # def run(%Session{pipeline: %{steps: steps}} = session) do
-  # def run_step(%{context: context} = session, step) do
+  test "run/1 runs all steps for a given session" do
+    # We will test this including the assets pipeline
+    cwd = File.cwd!()
+    File.cd!("test/fixtures/project_with_assets")
+
+    config = Mate.Config.read!("../config/basic_test_driver.exs")
+    session = Mate.Session.new(config, remote: Mate.Config.find_remote!(config, nil))
+    session = TestDriver.sandbox(session)
+
+    File.cd!(cwd)
+
+    # get hostname
+    TestDriver.response_for(session, :current_host, do: "test-host")
+
+    # check elixir
+    TestDriver.response_for(session, {:exec, "which", ["elixir"]}, do: {:ok, "/usr/bin/elixir"})
+    TestDriver.response_for(session, {:exec, "which", ["mix"]}, do: {:ok, "/usr/bin/mix"})
+
+    # check nodejs
+    TestDriver.response_for(session, {:exec, "which", ["node"]}, do: {:ok, "/usr/bin/node"})
+    TestDriver.response_for(session, {:exec, "which", ["npm"]}, do: {:ok, "/usr/bin/npm"})
+
+    # prepare source
+    TestDriver.response_for(session, :prepare_source, do: {:ok, "source prepared"})
+
+    # cleanup
+    for path <- ~w{_build rel priv/generated priv/static} do
+      TestDriver.response_for session, {:exec, "rm", ["-rf", "/tmp/mate/example/" <> path]} do
+        {:ok, "deleted"}
+      end
+    end
+
+    # deps.get
+    TestDriver.response_for(session, {:exec_script, ~r/mix deps.get/}, do: {:ok, "deps.get"})
+
+    # npm install
+    TestDriver.response_for(session, {:exec_script, ~r/npm install/}, do: {:ok, "install"})
+
+    # npm run deploy
+    TestDriver.response_for(session, {:exec_script, ~r/npm run deploy/}, do: {:ok, "deploy"})
+
+    # mix phx.digest
+    TestDriver.response_for session, {:exec_script, ~r/mix phx.digest/} do
+      {:ok, "mix phx.digest"}
+    end
+
+    # mix compile
+    TestDriver.response_for(session, {:exec_script, ~r/mix compile/}, do: {:ok, "mix compile"})
+
+    # mix release
+    TestDriver.response_for session, {:exec_script, ~r/mix release --overwrite/} do
+      {:ok, "mix release generated file /foo/bar/release.tar.gz"}
+    end
+
+    # copy release to local
+    TestDriver.response_for session, {:copy, "/foo/bar/release.tar.gz", ~r/release.tar.gz/} do
+      {:ok, "done"}
+    end
+
+    # stop connection
+    TestDriver.response_for(session, :stop, do: "bye")
+
+    Pipeline.run(session)
+  end
 end

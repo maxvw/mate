@@ -101,7 +101,7 @@ defmodule Mate.Pipeline do
   def run(%Session{pipeline: %{steps: steps}} = session) do
     hosts =
       case session do
-        %{context: :build} -> session.remote.build_server
+        %{context: :build} -> [session.remote.build_server]
         %{context: :deploy} -> [session.remote.deploy_server]
         %{context: context} -> Mix.raise("Unknown context (#{context})")
       end
@@ -110,7 +110,13 @@ defmodule Mate.Pipeline do
     sessions =
       for host <- hosts do
         {:ok, session} = session.driver.start(session, host)
-        session |> assign(current_host: host)
+
+        current_host =
+          if function_exported?(session.driver, :current_host, 1),
+            do: session.driver.current_host(session),
+            else: host
+
+        session |> assign(current_host: current_host)
       end
 
     steps
@@ -157,11 +163,6 @@ defmodule Mate.Pipeline do
         do: "(custom user function)",
         else: Utils.module_name(step) |> String.replace(~r/^Mate\.Step\./i, "")
 
-    current_host =
-      if function_exported?(session.driver, :current_host, 1),
-        do: session.driver.current_host(session),
-        else: session.assigns.current_host
-
     Mix.shell().info([
       :magenta,
       "[#{context}]",
@@ -171,7 +172,7 @@ defmodule Mate.Pipeline do
       step_name,
       :reset,
       ", host: ",
-      current_host
+      session.assigns.current_host
     ])
 
     session
