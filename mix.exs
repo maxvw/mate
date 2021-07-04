@@ -8,6 +8,7 @@ defmodule Mate.MixProject do
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       dialyzer: [
+        plt_local_path: "priv/plts",
         plt_core_path: "priv/plts",
         plt_add_apps: [:mix]
       ],
