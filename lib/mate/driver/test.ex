@@ -122,10 +122,4 @@ defmodule Mate.Driver.Test do
     {{_call, response}, responses} = List.pop_at(state.responses, response_index)
     {:reply, response, %{state | responses: responses}}
   end
-
-  # :stop
-  # {:exec, command, args}
-  # {:exec_script, script}
-  # {:copy, from, to}
-  # :prepare_source
 end

@@ -163,6 +163,7 @@ defmodule Mate.PipelineTest do
     config = Mate.Config.read!("../config/basic_test_driver.exs")
     session = Mate.Session.new(config, remote: Mate.Config.find_remote!(config, nil))
     session = TestDriver.sandbox(session)
+    session = %{session | verbosity: 2}
 
     File.cd!(cwd)
 
@@ -218,5 +219,30 @@ defmodule Mate.PipelineTest do
     TestDriver.response_for(session, :stop, do: "bye")
 
     Pipeline.run(session)
+  end
+
+  test "run/1 raises when one of the steps fails" do
+    config = Mate.Config.read!("test/fixtures/config/basic_test_driver.exs")
+    session = Mate.Session.new(config, remote: Mate.Config.find_remote!(config, nil))
+    session = TestDriver.sandbox(session)
+    session = %{session | verbosity: 2}
+
+    # get hostname
+    TestDriver.response_for(session, :current_host, do: "test-host")
+
+    # when an error is returned it will attempt to cleanly stop the driver
+    TestDriver.response_for(session, :stop, do: "bye")
+
+    # check elixir (we will let this one fail)
+    TestDriver.response_for(session, {:exec, "which", ["elixir"]},
+      do: {:error, "Elixir not found"}
+    )
+
+    # When running the pipeline the VerifyElixir step should fail with the output included.
+    assert_raise Mix.Error,
+                 "Elixir not found in PATH on remote server.\r\n\r\nElixir not found",
+                 fn ->
+                   Pipeline.run(session)
+                 end
   end
 end

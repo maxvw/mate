@@ -14,7 +14,7 @@ defmodule Mate.Step.MixDigest do
     """
 
     with {:error, error} <- remote_script(session, script),
-         do: bail("Failed to create front-end digest.", error)
+         do: bail(session, "Failed to create front-end digest.", error)
 
     {:ok, session}
   end
