@@ -20,7 +20,7 @@ The documentation for `mate` can be found on [hexdocs.pm/mate](https://hexdocs.p
 ```elixir
 def deps do
   [
-    {:mate, "~> 0.1.3", only: :dev}
+    {:mate, "~> 0.1.4", only: :dev}
   ]
 end
 ```
