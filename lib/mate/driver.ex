@@ -16,12 +16,12 @@ defmodule Mate.Driver do
     quote do
       @behaviour Mate.Driver
 
-      @spec set_conn(Session.t(), any()) :: Session.t()
+      @spec set_conn(session :: Session.t(), conn :: any()) :: Session.t()
       defp set_conn(session, conn) do
         %{session | conn: conn}
       end
 
-      @spec assign(Session.t(), atom(), any()) :: Session.t()
+      @spec assign(session :: Session.t(), key :: atom(), value :: any()) :: Session.t()
       defp assign(%{assigns: assigns} = session, key, value) when is_atom(key) do
         %{session | assigns: Keyword.put(assigns, key, value)}
       end
@@ -39,13 +39,13 @@ defmodule Mate.Driver do
   Executes a command using the driver
   """
   @callback exec(session :: Session.t(), command :: String.t(), args :: list(String.t())) ::
-              {:ok, Session.t()} | {:error, String.t()}
+              {:ok, String.t()} | {:error, String.t()}
 
   @doc """
   Executes a script using the driver
   """
   @callback exec_script(session :: Session.t(), script :: String.t()) ::
-              {:ok, Session.t()} | {:error, String.t()}
+              {:ok, String.t()} | {:error, String.t()}
 
   @doc """
   Prepare source
@@ -56,13 +56,13 @@ defmodule Mate.Driver do
   Copy a file from remote to local
   """
   @callback copy_from(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
-              {:ok, Session.t()} | {:error, String.t()}
+              {:ok, String.t()} | {:error, String.t()}
 
   @doc """
   Copy a file from local to remote
   """
   @callback copy_to(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
-              {:ok, Session.t()} | {:error, String.t()}
+              {:ok, String.t()} | {:error, String.t()}
 
   @doc """
   This one is optional and can be used to close the current connection, cleanup

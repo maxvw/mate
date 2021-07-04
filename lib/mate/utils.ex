@@ -46,7 +46,7 @@ defmodule Mate.Utils do
       iex> Mate.Utils.module_name("Elixir.Mate")
       "Mate"
   """
-  @spec module_name(map() | atom() | String.t()) :: String.t()
+  @spec module_name(module :: map() | atom() | String.t()) :: String.t()
   def module_name(%module{}), do: module_name(module)
 
   def module_name(module) when not is_binary(module) do
@@ -67,7 +67,7 @@ defmodule Mate.Utils do
     "HGEE0AFSH0"
   """
   @spec random_id() :: String.t()
-  @spec random_id(integer()) :: String.t()
+  @spec random_id(length :: integer()) :: String.t()
   def random_id(len \\ 32) do
     :crypto.strong_rand_bytes(len)
     |> Base.hex_encode32(padding: false)
@@ -93,7 +93,7 @@ defmodule Mate.Utils do
     iex> Mate.Utils.empty?([1,2,3])
     false
   """
-  @spec empty?(nil | String.t() | list()) :: boolean()
+  @spec empty?(input :: nil | String.t() | list()) :: boolean()
   def empty?(string) when is_binary(string), do: String.trim("#{string}") == ""
   def empty?([]), do: true
   def empty?(nil), do: true

@@ -27,3 +27,4 @@ mate-*.tar
 
 # Dialyzer files
 /priv/plts/*.plt
+/priv/plts/*.plt.hash

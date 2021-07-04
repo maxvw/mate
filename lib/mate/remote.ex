@@ -16,7 +16,7 @@ defmodule Mate.Remote do
     build_secrets: %{}
   ]
 
-  @type t() :: %__MODULE__{
+  @type t() :: %Mate.Remote{
           id: atom(),
           server: String.t(),
           build_path: String.t(),
@@ -26,20 +26,21 @@ defmodule Mate.Remote do
           build_secrets: map()
         }
 
-  @spec new(atom(), map()) :: Mate.Remote.t()
+  @doc "Creates a new `Mate.Remote` stuct with the given id and parameters."
+  @spec new(id :: atom(), params :: map()) :: Mate.Remote.t()
   def new(id, params) do
-    struct(__MODULE__, params)
+    struct(Mate.Remote, params)
     |> set_id(id)
     |> set_servers()
     |> validate()
   end
 
-  @spec set_id(Mate.Remote.t(), atom()) :: Mate.Remote.t()
+  @spec set_id(remote :: Mate.Remote.t(), id :: atom()) :: Mate.Remote.t()
   defp set_id(remote, id) do
     %{remote | id: id}
   end
 
-  @spec set_servers(Mate.Remote.t()) :: Mate.Remote.t()
+  @spec set_servers(remote :: Mate.Remote.t()) :: Mate.Remote.t()
   defp set_servers(remote) do
     build_server =
       [Map.get(remote, :build_server) || remote.server]
@@ -53,7 +54,7 @@ defmodule Mate.Remote do
     %{remote | build_server: build_server, deploy_server: deploy_server}
   end
 
-  @spec validate(Mate.Remote.t()) :: Mate.Remote.t()
+  @spec validate(remote :: Mate.Remote.t()) :: Mate.Remote.t()
   defp validate(remote) do
     if Utils.empty?(remote.build_server), do: Mix.raise("Missing build_server configuration")
     if Utils.empty?(remote.deploy_server), do: Mix.raise("Missing deploy_server configuration")

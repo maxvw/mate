@@ -22,7 +22,7 @@ defmodule Mate.Session do
     assigns: %{}
   ]
 
-  @type t() :: %__MODULE__{
+  @type t() :: %Mate.Session{
           pipeline: Pipeline.t(),
           remote: Mate.Remote.t(),
           driver: atom(),
@@ -53,10 +53,14 @@ defmodule Mate.Session do
     end
   end
 
-  @spec new(Mate.Config.t()) :: Mate.Session.t()
-  @spec new(Mate.Config.t(), keyword()) :: Mate.Session.t()
+  @doc """
+  Creates a new `Mate.Session` struct based on the given config file and
+  optionally any other options can be set.
+  """
+  @spec new(config :: Mate.Config.t()) :: Mate.Session.t()
+  @spec new(config :: Mate.Config.t(), keyword()) :: Mate.Session.t()
   def new(config, opts \\ []) do
-    %__MODULE__{
+    %Mate.Session{
       config: config,
       driver: config.driver,
       started_at: DateTime.utc_now(),

@@ -63,10 +63,10 @@ defmodule Mate.Config do
     remotes: []
   ]
 
-  @type t() :: %__MODULE__{
+  @type t() :: %Mate.Config{
           otp_app: atom(),
           module: String.t(),
-          steps: list(atom()) | function() | nil,
+          steps: Mate.Pipeline.steps() | function() | nil,
           driver: atom(),
           driver_opts: keyword(),
           mix_env: atom(),
@@ -74,18 +74,27 @@ defmodule Mate.Config do
           remotes: list(Remote.t())
         }
 
-  @spec read!(String.t()) :: Mate.Config.t()
+  @doc """
+  Reads and parses the given configuration file.
+  """
+  @spec read!(filename :: String.t()) :: Mate.Config.t()
   def read!(filename) do
     config = Config.Reader.read!(filename)
     remotes = config |> Keyword.drop([:mate])
-    config = struct(__MODULE__, config[:mate])
+    config = struct(Mate.Config, config[:mate])
 
     config
     |> parse_remotes(remotes)
     |> parse_steps(config.steps)
   end
 
-  @spec find_remote(Mate.Config.t(), atom() | String.t()) :: {:ok, Remote.t()} | {:error, any()}
+  @doc """
+  Find a specific remote in the given config, or if there was no specific search
+  query given it will just return the first one found as the default. This will
+  return as a tuple.
+  """
+  @spec find_remote(config :: Mate.Config.t(), remote :: atom() | String.t()) ::
+          {:ok, Remote.t()} | {:error, any()}
   def find_remote(%{remotes: []}, _), do: {:error, :no_remotes}
   def find_remote(%{remotes: [remote | _]}, nil), do: {:ok, remote}
 
@@ -98,7 +107,12 @@ defmodule Mate.Config do
     end
   end
 
-  @spec find_remote!(Mate.Config.t(), atom() | String.t()) :: Remote.t()
+  @doc """
+  Find a specific remote in the given config, or if there was no specific search
+  query given it will just return the first one found as the default. This will
+  return a `Mate.Remote` struct or raise an error when there was nothing found.
+  """
+  @spec find_remote!(config :: Mate.Config.t(), remote :: atom() | String.t()) :: Remote.t()
   def find_remote!(config, remote) do
     find_remote(config, remote)
     |> case do
@@ -108,7 +122,7 @@ defmodule Mate.Config do
     end
   end
 
-  @spec parse_remotes(Mate.Config.t(), list(keyword())) :: Mate.Config.t()
+  @spec parse_remotes(config :: Mate.Config.t(), remotes :: list(keyword())) :: Mate.Config.t()
   defp parse_remotes(config, remotes) do
     remotes =
       remotes
@@ -117,7 +131,7 @@ defmodule Mate.Config do
     %{config | remotes: remotes}
   end
 
-  @spec parse_steps(Mate.Config.t(), function()) :: Mate.Config.t()
+  @spec parse_steps(config :: Mate.Config.t(), steps_fn :: function()) :: Mate.Config.t()
   defp parse_steps(config, steps_fn) when is_function(steps_fn) do
     default_steps = Pipeline.default_steps()
 
@@ -131,12 +145,12 @@ defmodule Mate.Config do
     %{config | steps: steps}
   end
 
-  @spec parse_steps(Mate.Config.t(), list(atom())) :: Mate.Config.t()
+  @spec parse_steps(config :: Mate.Config.t(), steps :: Mate.Pipeline.steps()) :: Mate.Config.t()
   defp parse_steps(config, steps) when is_list(steps) do
     %{config | steps: steps}
   end
 
-  @spec parse_steps(Mate.Config.t(), nil) :: Mate.Config.t()
+  @spec parse_steps(config :: Mate.Config.t(), nil) :: Mate.Config.t()
   defp parse_steps(config, nil) do
     %{config | steps: Pipeline.default_steps()}
   end

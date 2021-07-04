@@ -22,8 +22,9 @@ defmodule Mate.Helpers do
   alias Mate.Session
 
   @doc "Execute a command (with arguments) on the local machine"
-  @spec local_cmd(Session.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
-  @spec local_cmd(Session.t(), String.t(), list(String.t())) ::
+  @spec local_cmd(session :: Session.t(), command :: String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  @spec local_cmd(session :: Session.t(), command :: String.t(), args :: list(String.t())) ::
           {:ok, String.t()} | {:error, String.t()}
   def local_cmd(%Session{} = session, cmd, args \\ []) when is_list(args) do
     if session.verbosity > 0,
@@ -51,7 +52,8 @@ defmodule Mate.Helpers do
   end
 
   @doc "Execute a script on the local machine"
-  @spec local_script(Session.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec local_script(session :: Session.t(), script :: String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
   def local_script(%Session{} = session, script) do
     if session.verbosity > 0,
       do: Mix.shell().info([:yellow, "local >", :reset, " ", script])
@@ -68,8 +70,9 @@ defmodule Mate.Helpers do
   end
 
   @doc "Execute a command (with arguments) on the remote machine"
-  @spec remote_cmd(Session.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
-  @spec remote_cmd(Session.t(), String.t(), list(String.t())) ::
+  @spec remote_cmd(session :: Session.t(), cmd :: String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  @spec remote_cmd(session :: Session.t(), cmd :: String.t(), args :: list(String.t())) ::
           {:ok, String.t()} | {:error, String.t()}
   def remote_cmd(%Session{driver: driver} = session, cmd, args \\ []) when is_list(args) do
     if session.verbosity > 0,
@@ -80,7 +83,8 @@ defmodule Mate.Helpers do
   end
 
   @doc "Execute a script on the remote machine"
-  @spec remote_script(Session.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec remote_script(session :: Session.t(), script :: String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
   def remote_script(%Session{driver: driver} = session, script) do
     if session.verbosity > 0,
       do: Mix.shell().info([:yellow, "remote > ", :reset, " ", script])
@@ -90,7 +94,7 @@ defmodule Mate.Helpers do
   end
 
   @doc "Copy a file from the remote server to the local machine"
-  @spec copy_from(Session.t(), String.t(), String.t()) ::
+  @spec copy_from(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
           {:ok, String.t()} | {:error, String.t()}
   def copy_from(%Session{driver: driver} = session, src, dest) do
     if session.verbosity > 0,
@@ -113,7 +117,8 @@ defmodule Mate.Helpers do
   end
 
   @doc "Copy a file from your local machine to the remote server"
-  @spec copy_to(Session.t(), String.t(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec copy_to(session :: Session.t(), src :: String.t(), dest :: String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
   def copy_to(%Session{driver: driver} = session, src, dest) do
     if session.verbosity > 0,
       do:
@@ -134,8 +139,9 @@ defmodule Mate.Helpers do
     driver.copy_to(session, src, dest)
   end
 
-  @spec bail(Mate.Session.t(), String.t()) :: no_return
-  @spec bail(Mate.Session.t(), String.t(), String.t()) :: no_return
+  @doc "Safely terminate connections and raises error"
+  @spec bail(session :: Mate.Session.t(), message :: String.t()) :: no_return
+  @spec bail(session :: Mate.Session.t(), message :: String.t(), error :: String.t()) :: no_return
   def bail(%{driver: driver} = session, message, error \\ "") do
     if function_exported?(driver, :close, 1) do
       driver.close(session)

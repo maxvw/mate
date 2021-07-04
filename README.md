@@ -2,7 +2,7 @@
 _Customisable Deployment for Elixir / Phoenix_
 
 [![Hex pm](http://img.shields.io/hexpm/v/mate.svg?style=flat)](https://hex.pm/packages/mate)
-[![License](http://img.shields.io/hexpm/l/mate.svg?style=flat)](LICENSE.md)
+[![License](http://img.shields.io/hexpm/l/mate.svg?style=flat)](https://github.com/maxvw/mate/blob/main/LICENSE.md)
 [![GitHub Actions](https://img.shields.io/github/workflow/status/maxvw/mate/tests)](https://github.com/maxvw/mate/actions)
 
 Elixir is fun to work with, releasing should be fun too. This project aims to help with that.

@@ -44,15 +44,13 @@ defmodule Mate.Driver.SSH do
   end
 
   @impl true
-  def copy_from(%Session{conn: conn, remote: remote}, remote_src, local_dest) do
-    remote_abs = remote.build_server <> ":" <> remote_src
-    GenServer.call(conn, {:scp, remote_abs, local_dest}, :infinity)
+  def copy_from(%Session{conn: conn}, remote_src, local_dest) do
+    GenServer.call(conn, {:scp, {:remote, remote_src}, local_dest}, :infinity)
   end
 
   @impl true
-  def copy_to(%Session{conn: conn, remote: remote}, local_src, remote_dest) do
-    remote_abs = remote.deploy_server <> ":" <> remote_dest
-    GenServer.call(conn, {:scp, local_src, remote_abs}, :infinity)
+  def copy_to(%Session{conn: conn}, local_src, remote_dest) do
+    GenServer.call(conn, {:scp, local_src, {:remote, remote_dest}}, :infinity)
   end
 
   @impl true
@@ -125,6 +123,18 @@ defmodule Mate.Driver.SSH do
   end
 
   def handle_call({:scp, src, dest}, _, state) do
+    src =
+      case src do
+        {:remote, path} -> state.host <> ":" <> path
+        path -> path
+      end
+
+    dest =
+      case dest do
+        {:remote, path} -> state.host <> ":" <> path
+        path -> path
+      end
+
     args = [
       "-oControlMaster=no",
       "-oControlPath=#{state.socket_file}",

@@ -55,13 +55,14 @@ defmodule Mate.Pipeline do
 
   @type step() :: atom() | function()
   @type steps() :: list(step())
-  @type t() :: %__MODULE__{
+  @type t() :: %Mate.Pipeline{
           prev_step: atom(),
           next_step: atom(),
           current_step: atom(),
           steps: steps()
         }
 
+  @doc "Returns list of default build steps."
   @spec default_steps() :: steps()
   def default_steps do
     package_json = Path.join("assets", "package.json") |> Path.absname()
@@ -87,17 +88,24 @@ defmodule Mate.Pipeline do
     end
   end
 
-  @spec new() :: __MODULE__.t()
+  @doc "Create a new Pipeline struct with default build steps"
+  @spec new() :: Mate.Pipeline.t()
   def new, do: new(default_steps())
 
-  @spec new(steps()) :: __MODULE__.t()
+  @doc "Create a new Pipeline struct with custom steps"
+  @spec new(steps :: steps()) :: Mate.Pipeline.t()
   def new(steps) when is_list(steps) do
-    %__MODULE__{
+    %Mate.Pipeline{
       steps: steps
     }
   end
 
-  @spec run(Session.t()) :: {:ok, Session.t()} | {:error, any()}
+  @doc """
+  Runs all steps within a given session for the given context, using the driver
+  from your configuration file. For build context it will use the build_server
+  and for deploy context it will run on all deploy servers.
+  """
+  @spec run(session :: Session.t()) :: {:ok, Session.t()} | {:error, any()}
   def run(%Session{pipeline: %{steps: steps}} = session) do
     hosts =
       case session do
@@ -124,7 +132,13 @@ defmodule Mate.Pipeline do
     |> next_step(sessions)
   end
 
-  @spec insert_before(steps(), step(), step()) :: steps()
+  @doc """
+  Inserts a custom step in the given steps before a specific spec.
+
+  Example:
+      pipeline.insert_before(steps, Mate.Step.CleanBuild, CustomStep)
+  """
+  @spec insert_before(steps :: steps(), target :: step(), new :: step()) :: steps()
   def insert_before(steps, target, new) do
     {:ok, target_index} = find_index(steps, target)
 
@@ -132,7 +146,13 @@ defmodule Mate.Pipeline do
     |> List.insert_at(target_index, new)
   end
 
-  @spec insert_after(steps(), step(), step()) :: steps()
+  @doc """
+  Inserts a custom step in the given steps after a specific spec.
+
+  Example:
+      pipeline.insert_after(steps, Mate.Step.CleanBuild, CustomStep)
+  """
+  @spec insert_after(steps :: steps(), target :: step(), new :: step()) :: steps()
   def insert_after(steps, target, new) do
     {:ok, target_index} = find_index(steps, target)
 
@@ -140,15 +160,27 @@ defmodule Mate.Pipeline do
     |> List.insert_at(target_index + 1, new)
   end
 
-  @spec replace(steps(), step(), step()) :: steps()
-  def replace(steps, target, new) do
+  @doc """
+  Replaces a specific step with a custom step in the given steps
+
+  Example:
+      pipeline.replace(steps, Mate.Step.CleanBuild, CustomStep)
+  """
+  @spec replace(steps :: steps(), target :: step(), replacement :: step()) :: steps()
+  def replace(steps, target, replacement) do
     {:ok, target_index} = find_index(steps, target)
 
     steps
-    |> List.replace_at(target_index, new)
+    |> List.replace_at(target_index, replacement)
   end
 
-  @spec remove(steps(), step()) :: steps()
+  @doc """
+  Removes a specific step from the given steps.
+
+  Example:
+      pipeline.remove(steps, Mate.Step.CleanBuild)
+  """
+  @spec remove(steps :: steps(), target :: step()) :: steps()
   def remove(steps, target) do
     {:ok, target_index} = find_index(steps, target)
 
@@ -156,7 +188,8 @@ defmodule Mate.Pipeline do
     |> List.delete_at(target_index)
   end
 
-  @spec run_step(Session.t(), step()) :: Session.t()
+  @doc "Run a specific step within the current session."
+  @spec run_step(session :: Session.t(), step :: step()) :: Session.t()
   def run_step(%{context: context} = session, step) do
     step_name =
       if is_function(step),
@@ -189,7 +222,8 @@ defmodule Mate.Pipeline do
     end
   end
 
-  @spec run_step(steps(), list(Session.t())) :: {:ok, Session.t()} | {:error, any()}
+  @spec run_step(steps :: steps(), sessions :: list(Session.t())) ::
+          {:ok, Session.t()} | {:error, any()}
   defp next_step([step | rest], sessions) do
     sessions =
       for session <- sessions do
@@ -224,7 +258,8 @@ defmodule Mate.Pipeline do
     {:ok, session}
   end
 
-  @spec do_perform(Session.t(), function()) :: {:ok, Session.t()} | {:error, any()}
+  @spec do_perform(session :: Session.t(), step_fn :: function()) ::
+          {:ok, Session.t()} | {:error, any()}
   defp do_perform(session, step_fn) when is_function(step_fn) do
     case :erlang.fun_info(step_fn)[:arity] do
       1 -> step_fn.(session)
@@ -232,10 +267,10 @@ defmodule Mate.Pipeline do
     end
   end
 
-  @spec do_perform(Session.t(), atom()) :: {:ok, Session.t()} | {:error, any()}
+  @spec do_perform(session :: Session.t(), step :: atom()) :: {:ok, Session.t()} | {:error, any()}
   defp do_perform(session, step) when is_atom(step), do: step.run(session)
 
-  @spec find_index(steps(), step()) :: {:ok, integer()} | {:error, atom()}
+  @spec find_index(steps :: steps(), target :: step()) :: {:ok, integer()} | {:error, atom()}
   defp find_index(steps, target) do
     steps
     |> Enum.with_index()
