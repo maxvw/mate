@@ -1,5 +1,5 @@
 defmodule Mate.ConfigTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "raises when file does not exist" do
     assert_raise File.Error, fn ->

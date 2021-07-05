@@ -1,5 +1,5 @@
 defmodule Mate.SessionTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   defmodule Example do
     use Mate.Session

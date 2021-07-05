@@ -1,5 +1,5 @@
 defmodule Mate.UtilsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Mate.Utils, except: [random_id: 0, random_id: 1]
 
   test "module/0 returns namespace module if set" do

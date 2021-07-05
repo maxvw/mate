@@ -1,5 +1,5 @@
 defmodule Mate.HelperTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Mate.Helpers
   alias Mate.Driver.Test, as: TestDriver
 

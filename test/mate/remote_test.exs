@@ -1,5 +1,5 @@
 defmodule Mate.RemoteTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Mate.Remote
 
   test "new/1 creates a new Remote" do
