@@ -8,12 +8,20 @@ defmodule Mate.Step.StartRelease do
     #!/usr/bin/env bash
     set -euo pipefail
     cd "#{remote.release_path}"
-    current_pid=$(bin/#{otp_app} pid || echo "0")
-    if [[ $current_pid == "0" ]]; then
-      bin/#{otp_app} daemon
-    else
-      bin/#{otp_app} restart
-    fi;
+
+    # attempt to stop
+    bin/#{otp_app} stop || true
+    for i in {1..20}; do
+      bin/#{otp_app} pid >/dev/null 2>&1 || break || :
+      sleep 1
+    done
+
+    # attempt to start
+    bin/#{otp_app} daemon
+    for i in {1..20}; do
+      bin/#{otp_app} pid >/dev/null 2>&1 && break || :
+      sleep 1
+    done
     """
 
     with {:error, error} <- remote_script(session, script),
