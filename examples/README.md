@@ -2,4 +2,7 @@
 This directory contains very basic Phoenix projects that are used for testing.
 
 ## docker_project
-This is a very basic Phoenix project with Mate deployment using Docker.
+An example of using Docker to build your release.
+
+## local_project
+An example of using your local machine to build your release.

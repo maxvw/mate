@@ -9,6 +9,7 @@ jobs:
       matrix:
         driver:
           - docker
+          - local
     steps:
     - uses: actions/checkout@v2
     - name: Set up Elixir

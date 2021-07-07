@@ -1,5 +1,8 @@
 # Changelog
 
+## unreleased
+  * [test] added way ot test Local driver on CI
+
 ## 0.1.5
   * [mix mate.build] added new build-only command
   * [StartRelease] fixed bash script to do a real restart

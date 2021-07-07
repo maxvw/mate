@@ -23,6 +23,7 @@ defmodule Mate.Driver.Local do
 
   """
   alias Mate.Pipeline
+  alias Mate.Helpers
   use Mate.Session
   use Mate.Driver
 
@@ -37,7 +38,22 @@ defmodule Mate.Driver.Local do
   end
 
   @impl true
-  def prepare_source(session) do
+  def prepare_source(%{remote: remote} = session) do
+    # prepare git remote
+    git_remote_name = "mate-#{remote.id}"
+    git_remote_url = "file://" <> remote.build_path
+
+    # Ensure the remote to local build directory exists
+    # this overrides the same logic in `VerifyGit`, which will skip this step
+    # if the remote name is already defined. To push to a local directory it
+    # has to use a file:///path/to/build_dir format.
+    with {:error, _error} <-
+           Helpers.local_cmd(session, "git", ~w{remote get-url #{git_remote_name}}),
+         {:error, error} <-
+           Helpers.local_cmd(session, "git", ~w{remote add #{git_remote_name} #{git_remote_url}}) do
+      Helpers.bail(session, "Failed to ensure remote origin on local git repository.", error)
+    end
+
     {:ok,
      session
      |> Pipeline.run_step(Mate.Step.VerifyGit)
@@ -46,12 +62,12 @@ defmodule Mate.Driver.Local do
 
   @impl true
   def exec(session, command, args) do
-    Mate.Helpers.local_cmd(session, command, args)
+    Helpers.local_cmd(session, command, args)
   end
 
   @impl true
   def exec_script(session, script) do
-    Mate.Helpers.local_script(session, script)
+    Helpers.local_script(session, script)
   end
 
   @impl true
