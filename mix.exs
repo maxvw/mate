@@ -28,7 +28,7 @@ defmodule Mate.MixProject do
 
   defp package() do
     [
-      files: ~w(lib priv .formatter.exs mix.exs README* LICENSE*),
+      files: ~w(lib priv/run-wrapper.sh .formatter.exs mix.exs CHANGELOG* README* LICENSE*),
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/maxvw/mate"}
     ]
