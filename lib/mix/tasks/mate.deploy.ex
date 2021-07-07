@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Mate.Deploy do
 
   use Mix.Task
 
-  @shortdoc "Deploys the current commit of your application"
+  @shortdoc "Builds and deploys the current commit of your application"
 
   @switches [
     verbose: [:integer, :count]

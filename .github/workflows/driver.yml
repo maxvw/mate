@@ -1,0 +1,20 @@
+name: driver-tests
+on: push
+
+jobs:
+  run-tests:
+    name: Run driver tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        driver:
+          - docker
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Elixir
+      uses: erlef/setup-elixir@v1
+      with:
+        elixir-version: '1.12.0'
+        otp-version: '24.0'
+    - name: Run tests for ${{ matrix.driver }} driver
+      run: ./bin/test_driver.sh ${{ matrix.driver }}
