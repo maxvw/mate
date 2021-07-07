@@ -17,5 +17,10 @@ jobs:
       with:
         elixir-version: '1.12.0'
         otp-version: '24.0'
+    - name: Set up NodeJS
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+        registry-url: 'https://registry.npmjs.org'
     - name: Run tests for ${{ matrix.driver }} driver
       run: ./bin/test_driver.sh ${{ matrix.driver }}
