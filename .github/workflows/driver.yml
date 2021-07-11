@@ -23,6 +23,8 @@ jobs:
       with:
         node-version: '16.x'
         registry-url: 'https://registry.npmjs.org'
+    # NOTE: Only needed for the SSH test but we'll setup some SSH things here
+    # as well.
     - name: Configure ssh keys
       run: ssh-keygen -q -t ed25519 -N "" -f ~/.ssh/id_ed25519
     - name: Configure authorized keys
@@ -33,6 +35,9 @@ jobs:
       run: chmod 755 ~
     - name: Configure file permissions
       run: chmod 600 ~/.ssh/*
+    # NOTE: to ensure the Elixir/Node binaries are found when using SSH
+    # we need to set the path for our ssh session, this is a simple hacky way
+    # to accomplish that.
     - name: Save environment (PATH)
       run: echo PATH="$PATH" | sudo tee /etc/environment
     - name: Run tests for ${{ matrix.driver }} driver
