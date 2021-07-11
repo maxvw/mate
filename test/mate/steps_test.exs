@@ -19,6 +19,7 @@ defmodule Mate.StepTests do
     PrepareSource,
     CopyToDeployHost,
     StartRelease,
+    StopRelease,
     UnarchiveRelease
   }
 
@@ -186,6 +187,14 @@ defmodule Mate.StepTests do
     {:failure, StartRelease,
      [
        [{:error, "error"}, {:exec_script, ~r/bin\/example daemon/}]
+     ]},
+    {:success, StopRelease,
+     [
+       [{:ok, "done"}, {:exec_script, ~r/bin\/example stop/}]
+     ]},
+    {:failure, StopRelease,
+     [
+       [{:error, "error"}, {:exec_script, ~r/bin\/example stop/}]
      ]},
     {:success, LinkBuildSecrets,
      [

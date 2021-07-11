@@ -1,5 +1,5 @@
 defmodule Mate.PipelineTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   alias Mate.Pipeline
   alias Mate.Driver.Test, as: TestDriver
 

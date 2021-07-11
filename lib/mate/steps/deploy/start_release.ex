@@ -9,12 +9,11 @@ defmodule Mate.Step.StartRelease do
     set -euo pipefail
     cd "#{remote.release_path}"
 
-    # attempt to stop
-    bin/#{otp_app} stop || true
-    for i in {1..20}; do
-      bin/#{otp_app} pid >/dev/null 2>&1 || break || :
-      sleep 1
-    done
+    # ensure app is not running
+    if bin/#{otp_app} pid >/dev/null 2>&1; then
+      echo "Application already running? Did you use StopRelease first?"
+      exit 1
+    fi
 
     # attempt to start
     bin/#{otp_app} daemon
@@ -22,6 +21,14 @@ defmodule Mate.Step.StartRelease do
       bin/#{otp_app} pid >/dev/null 2>&1 && break || :
       sleep 1
     done
+
+    # ensure app is running
+    if ! bin/#{otp_app} pid >/dev/null 2>&1; then
+      echo "Failed to start application"
+      exit 1
+    fi
+
+    echo "Application started"
     """
 
     with {:error, error} <- remote_script(session, script),

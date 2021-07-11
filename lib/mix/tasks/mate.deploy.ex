@@ -4,6 +4,7 @@ defmodule Mix.Tasks.Mate.Deploy do
 
   alias Mate.Step.{
     CopyToDeployHost,
+    StopRelease,
     UnarchiveRelease,
     StartRelease
   }
@@ -59,6 +60,7 @@ defmodule Mix.Tasks.Mate.Deploy do
         pipeline:
           Pipeline.new([
             CopyToDeployHost,
+            StopRelease,
             UnarchiveRelease,
             StartRelease
           ])
