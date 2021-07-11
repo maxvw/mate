@@ -10,6 +10,7 @@ jobs:
         driver:
           - docker
           - local
+          - ssh
     steps:
     - uses: actions/checkout@v2
     - name: Set up Elixir
@@ -22,5 +23,17 @@ jobs:
       with:
         node-version: '16.x'
         registry-url: 'https://registry.npmjs.org'
+    - name: Configure ssh keys
+      run: ssh-keygen -q -t ed25519 -N "" -f ~/.ssh/id_ed25519
+    - name: Configure authorized keys
+      run: cat ~/.ssh/id_ed25519.pub  > ~/.ssh/authorized_keys
+    - name: Configure ssh host key
+      run: ssh-keyscan localhost > ~/.ssh/known_hosts
+    - name: Configure home permissions
+      run: chmod 755 ~
+    - name: Configure file permissions
+      run: chmod 600 ~/.ssh/*
+    - name: Save environment (PATH)
+      run: echo PATH="$PATH" | sudo tee /etc/environment
     - name: Run tests for ${{ matrix.driver }} driver
       run: ./bin/test_driver.sh ${{ matrix.driver }}
