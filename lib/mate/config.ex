@@ -65,7 +65,7 @@ defmodule Mate.Config do
 
   @type t() :: %Mate.Config{
           otp_app: atom(),
-          module: String.t(),
+          module: atom(),
           steps: Mate.Pipeline.steps() | function() | nil,
           driver: atom(),
           driver_opts: keyword(),
