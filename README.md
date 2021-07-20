@@ -30,4 +30,4 @@ Then you can get the latest dependencies and use `mix mate.init` to get started!
 - `$ mix mate.init`
 
 ## Why is it called Mate?
-Naming is hard and I wanted something short. Most deployment software seems to stick to a nautical theme with their naming, so I ended up with mate.
+Naming is hard and I wanted something short. Most deployment software seems to stick to a nautical theme with their naming, so I ended up with mate. But I am open to other suggestions while the project is still in it's early beginnings.

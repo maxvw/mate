@@ -3,7 +3,7 @@ defmodule Mate.Driver do
   This is the behaviour for Mate Drivers.
 
   The idea behind supporting multiple drivers is allowing the user to decide
-  how and where they want to build their application. By default is will use
+  how and where they want to build their application. By default it will use
   the SSH driver, but maybe in the near future there will be other built-in
   drivers. It is also possible to write your own, of course. For an example I
   recommend looking at `Mate.Driver.SSH`.

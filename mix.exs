@@ -17,10 +17,11 @@ defmodule Mate.MixProject do
       deps: deps(),
       name: "Mate",
       docs: [
-        main: "about",
-        extras: [
-          "README.md": [filename: "about", title: "About Mate"]
-        ]
+        main: "overview",
+        extra_section: "GUIDES",
+        groups_for_extras: groups_for_extras(),
+        groups_for_modules: groups_for_modules(),
+        extras: extras()
       ],
       source_url: "https://github.com/maxvw/mate"
     ]
@@ -48,6 +49,56 @@ defmodule Mate.MixProject do
     [
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false}
+    ]
+  end
+
+  defp extras do
+    [
+      "guides/introduction/overview.md",
+      "guides/introduction/getting_started.md",
+      "guides/introduction/build_strategies.md",
+      "guides/how_to/custom_driver.md",
+      "guides/how_to/custom_steps.md"
+    ]
+  end
+
+  defp groups_for_extras do
+    [
+      Introduction: ~r/guides\/introduction\/.?/,
+      "How To's": ~r/guides\/how_to\/.?/
+    ]
+  end
+
+  defp groups_for_modules do
+    [
+      Testing: [
+        Mate.Driver.Test
+      ],
+      "Build Drivers": [
+        Mate.Driver.SSH,
+        Mate.Driver.Docker,
+        Mate.Driver.Local
+      ],
+      "Available Steps": [
+        Mate.Step.CleanBuild,
+        Mate.Step.CopyToStorage,
+        Mate.Step.LinkBuildSecrets,
+        Mate.Step.MixCompile,
+        Mate.Step.MixDeps,
+        Mate.Step.MixDigest,
+        Mate.Step.MixRelease,
+        Mate.Step.NpmBuild,
+        Mate.Step.NpmInstall,
+        Mate.Step.PrepareSource,
+        Mate.Step.SendGitCommit,
+        Mate.Step.VerifyElixir,
+        Mate.Step.VerifyGit,
+        Mate.Step.VerifyNode,
+        Mate.Step.CopyToDeployHost,
+        Mate.Step.StartRelease,
+        Mate.Step.StopRelease,
+        Mate.Step.UnarchiveRelease
+      ]
     ]
   end
 end
