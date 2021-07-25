@@ -4,7 +4,7 @@ defmodule Mate.MixProject do
   def project do
     [
       app: :mate,
-      version: "0.1.5",
+      version: "0.1.6",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       dialyzer: [
@@ -58,7 +58,8 @@ defmodule Mate.MixProject do
       "guides/introduction/getting_started.md",
       "guides/introduction/build_strategies.md",
       "guides/how_to/custom_driver.md",
-      "guides/how_to/custom_steps.md"
+      "guides/how_to/custom_steps.md",
+      "guides/introduction/faq.md"
     ]
   end
 

@@ -1,7 +1,9 @@
 # Changelog
 
-## unreleased
+## 0.1.6
   * [test] added way ot test Local driver on CI
+  - [StopRelease] added new step to stop the release before unarchiving the new one
+  * [doc] updated docs
 
 ## 0.1.5
   * [mix mate.build] added new build-only command

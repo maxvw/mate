@@ -6,7 +6,7 @@ Mate is available via [https://hex.pm/packages/mate](hex.pm). Add `mate` to your
 ```elixir
 def deps do
   [
-    {:mate, "~> 0.1.5", only: :dev}
+    {:mate, "~> 0.1.6", only: :dev}
   ]
 end
 ```
@@ -55,6 +55,25 @@ config :staging,
 The main things to configure are the `server`, `build_path` and `release_path` values. If needed you can also configure your secret files by linking them to files already on the build server.
 
 It is also possible to configure a separate `build_server` and `deploy_server`, the default `server` command expects them both to be the same value.
+
+## Configure Mix Release
+While Elixir 1.9+ supports a default `mix release` task, it does not by default generate a `.tar.gz` file. This is what is needed for Mate to easily transfer the release between your build and deploy servers. So in your projects `mix.exs` file please make sure you enable the `:tar` step.
+
+    defmodule MyProject.MixProject do
+      use Mix.Project
+
+      def project do
+        [
+          app: :my_project,
+          ...
+          releases: [
+            my_project: [
+              include_executables_for: [:unix],
+              steps: [:assemble, :tar]
+            ]
+          ],
+      ...
+
 
 ## First release
 Running `mix mate.deploy` will start the build process, based on your configuration file. What exactly happens there can be changed with [custom steps](how_to/custom_steps.md). If something goes wrong Mate should return a useful error message, and if everything goes according to plan you should end up with a release tarball in your project directory.

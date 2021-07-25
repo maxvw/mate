@@ -48,7 +48,7 @@ defmodule Mate.Driver do
               {:ok, String.t()} | {:error, String.t()}
 
   @doc """
-  Prepare source
+  Prepare the source for building, for example send it to the build server.
   """
   @callback prepare_source(session :: Session.t()) :: {:ok, Session.t()} | {:error, String.t()}
 
