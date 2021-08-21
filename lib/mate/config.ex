@@ -58,6 +58,8 @@ defmodule Mate.Config do
     :steps,
     driver: Mate.Driver.SSH,
     driver_opts: [],
+    storage: Mate.Storage.Local,
+    storage_opts: [],
     mix_env: :prod,
     clean_paths: ~w{_build rel priv/generated priv/static},
     remotes: []
@@ -69,6 +71,8 @@ defmodule Mate.Config do
           steps: Mate.Pipeline.steps() | function() | nil,
           driver: atom(),
           driver_opts: keyword(),
+          storage: atom(),
+          storage_opts: keyword(),
           mix_env: atom(),
           clean_paths: list(String.t()),
           remotes: list(Remote.t())

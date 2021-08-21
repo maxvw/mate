@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7 (unrelease)
+  * [Storage] added a new storage driver system
+  * [Storage.Local] the default storage engine (local machine)
+
 ## 0.1.6
   * [test] added way ot test Local driver on CI
   - [StopRelease] added new step to stop the release before unarchiving the new one
