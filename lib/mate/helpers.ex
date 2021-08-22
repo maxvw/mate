@@ -147,6 +147,10 @@ defmodule Mate.Helpers do
       driver.close(session)
     end
 
+    if function_exported?(session.storage, :close, 1) do
+      session.storage.close(session)
+    end
+
     if error != "",
       do: Mix.raise("#{message}\r\n\r\n#{error}"),
       else: Mix.raise(message)

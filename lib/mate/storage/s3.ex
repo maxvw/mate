@@ -77,8 +77,8 @@ defmodule Mate.Storage.S3 do
     ExAws.Config.new(:s3, aws_config)
   end
 
-  defp config(%{config: %{storage_opts: config}}, key) do
+  defp config(%{config: %{storage_opts: config}} = session, key) do
     Keyword.get(config, key) ||
-      Mix.raise("Looks like you forget to configure storage_opts.#{key}")
+      Helpers.bail(session, "Looks like you forget to configure storage_opts.#{key}")
   end
 end

@@ -1,8 +1,10 @@
 # Changelog
 
-## 0.1.7 (unrelease)
-  * [Storage] added a new storage driver system
+## 0.1.7 (unreleased)
+  * [Storage] added a new storage driver system for your releases
   * [Storage.Local] the default storage engine (local machine)
+  * [Storage.S3] store your releases on S3 (requires `ex_aws`, `ex_aws_s3`)
+  * [Storage.BuildServer] store your releases on your build server
 
 ## 0.1.6
   * [test] added way ot test Local driver on CI
