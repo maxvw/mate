@@ -13,6 +13,7 @@ defmodule Mate.Session do
     :pipeline,
     :remote,
     :driver,
+    :storage,
     :config,
     :conn,
     started_at: nil,
@@ -26,6 +27,7 @@ defmodule Mate.Session do
           pipeline: Pipeline.t(),
           remote: Mate.Remote.t(),
           driver: atom(),
+          storage: atom(),
           config: Mate.Config.t(),
           conn: any(),
           started_at: DateTime.t() | nil,
@@ -63,6 +65,7 @@ defmodule Mate.Session do
     %Mate.Session{
       config: config,
       driver: config.driver,
+      storage: config.storage,
       started_at: DateTime.utc_now(),
       pipeline: Pipeline.new(config.steps)
     }

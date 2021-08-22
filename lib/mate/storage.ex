@@ -20,6 +20,18 @@ defmodule Mate.Storage do
     end
   end
 
+  @spec upload(session :: Session.t(), file :: String.t()) ::
+          {:ok, Session.t()} | {:error, String.t()}
+  def upload(%{storage: storage} = session, file) do
+    storage.upload(session, file)
+  end
+
+  @spec download(session :: Session.t(), file :: String.t()) ::
+          {:ok, Session.t()} | {:error, String.t()}
+  def download(%{storage: storage} = session, file) do
+    storage.download(session, file)
+  end
+
   @doc """
   Connect to your storage host.
   """

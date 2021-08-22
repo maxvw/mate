@@ -115,6 +115,14 @@ defmodule Mate.Pipeline do
       end
       |> List.flatten()
 
+    session =
+      if function_exported?(session.storage, :connect, 1) do
+        {:ok, session} = session.storage.connect(session)
+        session
+      else
+        session
+      end
+
     sessions =
       for host <- hosts do
         {:ok, session} = session.driver.start(session, host)
@@ -251,6 +259,10 @@ defmodule Mate.Pipeline do
 
         %{session | finished_at: DateTime.utc_now()}
       end
+
+    if function_exported?(session.storage, :close, 1) do
+      session.storage.close(session)
+    end
 
     duration = DateTime.diff(session.finished_at, session.started_at, :second)
 
