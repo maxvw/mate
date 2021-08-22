@@ -31,13 +31,13 @@ defmodule Mate.Storage do
   @callback close(session :: Session.t()) :: {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
-  Upload the given file from your local machine to the storage host.
+  Upload the given file from the build server to storage.
   """
   @callback upload(session :: Session.t(), file :: String.t()) ::
               {:ok, Session.t()} | {:error, String.t()}
 
   @doc """
-  Download the given file from the storage host to your local machine.
+  Downloads the given file from storage to the deploy host(s)
   """
   @callback download(session :: Session.t(), file :: String.t()) ::
               {:ok, Session.t()} | {:error, String.t()}

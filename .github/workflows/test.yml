@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MIX_ENV: test
+      AWS_ACCESS_KEY: '${{ secrets.AWS_ACCESS_KEY }}'
+      AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
     steps:
     - uses: actions/checkout@v2
     - name: Set up Elixir

@@ -41,14 +41,18 @@ defmodule Mate.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :eex, :crypto]
+      extra_applications: [:logger, :eex, :crypto, :ex_aws, :ex_aws_s3]
     ]
   end
 
   defp deps do
     [
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
+
+      # Optional packages to support the S3 Storage module:
+      {:ex_aws, "~> 2.0", optional: true},
+      {:ex_aws_s3, "~> 2.0", optional: true}
     ]
   end
 
