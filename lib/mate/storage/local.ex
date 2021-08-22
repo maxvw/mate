@@ -4,12 +4,12 @@ defmodule Mate.Storage.Local do
 
   @impl true
   def upload(session, file) do
-    Helpers.copy_to(session, file, to_local(file))
+    Helpers.copy_to(session, to_local(file), file)
   end
 
   @impl true
   def download(session, file) do
-    Helpers.copy_from(session, to_local(file), file)
+    Helpers.copy_from(session, file, to_local(file))
   end
 
   defp to_local(file) do
