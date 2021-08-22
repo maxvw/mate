@@ -35,7 +35,7 @@ defmodule Mate.Driver.SSH do
 
   @impl true
   def exec(%Session{conn: conn}, command, args) do
-    GenServer.call(conn, {:ssh, command, args}, :infinity)
+    GenServer.call(conn, {:ssh, command, escape_args(args)}, :infinity)
   end
 
   @impl true
@@ -167,5 +167,10 @@ defmodule Mate.Driver.SSH do
 
   def handle_info({conn, {:exit_status, status}}, %{conn: conn} = _state) do
     Mix.raise("SSH ControlMaster exited unexpectedly with exit code #{status}")
+  end
+
+  defp escape_args(args) do
+    args
+    |> Enum.map(&("'" <> String.replace(&1, "'", "'\"'\"'") <> "'"))
   end
 end
