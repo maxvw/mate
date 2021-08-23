@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.7 (unreleased)
+## 0.1.7
   * [Storage] added a new storage driver system for your releases
   * [Storage.Local] the default storage engine (local machine)
   * [Storage.S3] store your releases on S3 (requires `ex_aws`, `ex_aws_s3`)
