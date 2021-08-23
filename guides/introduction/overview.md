@@ -10,7 +10,7 @@ It does this on a clean copy of your current Git commit, if you have any (un)sta
 
 Based on your [configured build strategy](introduction/build_strategies.md) it will run the build steps on either a remote server via SSH, using a Docker image or on your local machine directly. Make sure you choose the right one because you can't compile cross-platform or cross-arch.
 
-The result of the build should be a tarball (`tar.gz`) that ends up in your project root on your local machine. In the future possibly other storage options will be added, and you could always built this yourselves using [custom steps](how_to/custom_steps.md) by replacing the default `CopyToStorage` step in your configuration.
+The result of the build should be a tarball (`tar.gz`) that ends up in a `Mate.Storage` option of your choice, by default is uses `Mate.Storage.Local` which is just your project root on your local machine. Although you can configure a different directory as well. The other included storage modules are `Mate.Storage.S3` and `Mate.Storage.BuildServer` to store on either S3 (using `ex_aws`) or the build server where you build the release. It is also possible to [write your own `Mate.Storage` module for any other storage needs](how_to/custom_steps.md).
 
 With `mix mate.deploy` it will also ask you if you want to deploy your newly built release. This will be sent to all configured deploy servers via ssh and automatically (re)started. This is optional.
 

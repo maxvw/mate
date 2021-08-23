@@ -61,7 +61,9 @@ defmodule Mate.MixProject do
       "guides/introduction/overview.md",
       "guides/introduction/getting_started.md",
       "guides/introduction/build_strategies.md",
+      "guides/introduction/storage_options.md",
       "guides/how_to/custom_driver.md",
+      "guides/how_to/custom_storage.md",
       "guides/how_to/custom_steps.md",
       "guides/introduction/faq.md"
     ]
