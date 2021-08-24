@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.8
+  * [mix] removed `ex_aws` from `extra_applications` to fix compiler error
+
 ## 0.1.7
   * [Storage] added a new storage driver system for your releases
   * [Storage.Local] the default storage engine (local machine)

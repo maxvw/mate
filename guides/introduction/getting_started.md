@@ -6,7 +6,7 @@ Mate is available via [https://hex.pm/packages/mate](hex.pm). Add `mate` to your
 ```elixir
 def deps do
   [
-    {:mate, "~> 0.1.7", only: :dev}
+    {:mate, "~> 0.1.8", only: :dev}
   ]
 end
 ```

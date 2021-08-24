@@ -4,7 +4,7 @@ defmodule Mate.MixProject do
   def project do
     [
       app: :mate,
-      version: "0.1.7",
+      version: "0.1.8",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       dialyzer: [
