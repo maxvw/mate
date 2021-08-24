@@ -10,7 +10,7 @@ defmodule Mate.MixProject do
       dialyzer: [
         plt_local_path: "priv/plts",
         plt_core_path: "priv/plts",
-        plt_add_apps: [:mix]
+        plt_add_apps: [:mix, :ex_aws, :ex_aws_s3]
       ],
       description: description(),
       package: package(),
@@ -41,7 +41,7 @@ defmodule Mate.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :eex, :crypto, :ex_aws, :ex_aws_s3]
+      extra_applications: [:logger, :eex, :crypto]
     ]
   end
 
