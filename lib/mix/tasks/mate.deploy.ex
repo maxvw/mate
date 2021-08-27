@@ -14,10 +14,12 @@ defmodule Mix.Tasks.Mate.Deploy do
   @shortdoc "Builds and deploys the current commit of your application"
 
   @switches [
-    verbose: [:integer, :count]
+    verbose: [:integer, :count],
+    force: [:boolean]
   ]
 
   @aliases [
+    f: :force,
     v: :verbose
   ]
 
@@ -26,6 +28,7 @@ defmodule Mix.Tasks.Mate.Deploy do
 
   ## Command line options
 
+    * `-f`, `--force` - forces deploy after a successful build
     * `-v`, `--verbose` - increases verbosity level (more output!)
 
   """
@@ -34,6 +37,7 @@ defmodule Mix.Tasks.Mate.Deploy do
   def run(args) do
     {opts, argv} = OptionParser.parse!(args, strict: @switches, aliases: @aliases)
     verbosity = Keyword.get(opts, :verbose, 0)
+    force_deploy? = Keyword.get(opts, :force, false)
 
     config = Mate.Config.read!(".mate.exs")
     remote = Mate.Config.find_remote!(config, List.first(argv))
@@ -45,8 +49,10 @@ defmodule Mix.Tasks.Mate.Deploy do
 
     hosts = [remote.deploy_server] |> List.flatten() |> Enum.join(", ")
 
-    unless Mix.shell().yes?("Do you want to deploy this build to #{hosts}?"),
-      do: exit(:normal)
+    unless force_deploy? do
+      unless Mix.shell().yes?("Do you want to deploy this build to #{hosts}?"),
+        do: exit(:normal)
+    end
 
     Mix.shell().info(["Starting deploy on", " ", :bright, to_string(remote.id)])
 

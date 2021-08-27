@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.9 (unreleased)
+  * [mix mate.deploy] added `-f`/`--force` to skip prompt to start deploy
+
 ## 0.1.8
   * [mix] removed `ex_aws` from `extra_applications` to fix compiler error
 
