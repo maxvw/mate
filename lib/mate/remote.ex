@@ -13,6 +13,8 @@ defmodule Mate.Remote do
     :release_path,
     :build_server,
     :deploy_server,
+    pre_deploy: [],
+    post_deploy: [],
     build_secrets: %{}
   ]
 
@@ -23,7 +25,9 @@ defmodule Mate.Remote do
           release_path: String.t(),
           build_server: String.t(),
           deploy_server: String.t() | list(String.t()),
-          build_secrets: map()
+          build_secrets: map(),
+          pre_deploy: list({:rpc | :eval, String.t() | list(String.t())}),
+          post_deploy: list({:rpc | :eval, String.t() | list(String.t())})
         }
 
   @doc "Creates a new `Mate.Remote` stuct with the given id and parameters."
