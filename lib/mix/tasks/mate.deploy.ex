@@ -6,7 +6,9 @@ defmodule Mix.Tasks.Mate.Deploy do
     CopyToDeployHost,
     StopRelease,
     UnarchiveRelease,
-    StartRelease
+    StartRelease,
+    RunPreDeploy,
+    RunPostDeploy
   }
 
   use Mix.Task
@@ -68,7 +70,9 @@ defmodule Mix.Tasks.Mate.Deploy do
             CopyToDeployHost,
             StopRelease,
             UnarchiveRelease,
-            StartRelease
+            RunPreDeploy,
+            StartRelease,
+            RunPostDeploy
           ])
       )
 
